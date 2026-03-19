@@ -1,0 +1,1958 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atlas — Mon Espace d'Étude</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #f7f5f0;
+    --bg2: #edeae3;
+    --bg3: #e2ddd5;
+    --surface: #ffffff;
+    --surface2: #f9f7f4;
+    --border: #d8d3ca;
+    --border2: #c8c2b8;
+    --text: #1a1714;
+    --text2: #5a5650;
+    --text3: #8a847d;
+    --accent: #c47b3a;
+    --accent2: #a86028;
+    --accent-light: #f5e8d8;
+    --blue: #3a6fbc;
+    --blue-light: #dce8f8;
+    --red: #bc3a3a;
+    --red-light: #f8dcdc;
+    --green: #3a8c5c;
+    --green-light: #d8f0e4;
+    --yellow: #c49a2a;
+    --yellow-light: #fdf3d0;
+    --shadow: 0 2px 12px rgba(0,0,0,0.08);
+    --shadow2: 0 4px 24px rgba(0,0,0,0.12);
+    --radius: 10px;
+    --radius2: 16px;
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'DM Sans', system-ui, sans-serif;
+    --font-mono: 'DM Mono', monospace;
+    --transition: 0.2s ease;
+  }
+
+  [data-theme="dark"] {
+    --bg: #151310;
+    --bg2: #1d1a17;
+    --bg3: #252118;
+    --surface: #201d19;
+    --surface2: #2a261f;
+    --border: #3a3528;
+    --border2: #4a4335;
+    --text: #f0ece4;
+    --text2: #b0a898;
+    --text3: #706860;
+    --accent: #d4904a;
+    --accent2: #e8a860;
+    --accent-light: #3a2a14;
+    --blue: #6090d8;
+    --blue-light: #1a2840;
+    --red: #d86060;
+    --red-light: #381818;
+    --green: #60b880;
+    --green-light: #183028;
+    --yellow: #d4b050;
+    --yellow-light: #302410;
+    --shadow: 0 2px 12px rgba(0,0,0,0.3);
+    --shadow2: 0 4px 24px rgba(0,0,0,0.4);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    transition: background var(--transition), color var(--transition);
+    overflow-x: hidden;
+  }
+
+  /* ===== LAYOUT ===== */
+  #app { display: flex; flex-direction: column; min-height: 100vh; }
+
+  /* ===== TOP BAR ===== */
+  #topbar {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    padding: 0 20px;
+    display: flex; align-items: center; gap: 12px;
+    height: 56px;
+  }
+  #topbar-logo {
+    font-family: var(--font-display);
+    font-size: 1.2rem; font-weight: 700;
+    color: var(--accent);
+    cursor: pointer; white-space: nowrap;
+    flex-shrink: 0;
+  }
+  #topbar-logo span { font-style: italic; font-weight: 400; }
+  #breadcrumb {
+    display: flex; align-items: center; gap: 4px;
+    font-size: 0.82rem; color: var(--text3);
+    flex: 1; overflow: hidden;
+    white-space: nowrap;
+  }
+  #breadcrumb .bc-item {
+    cursor: pointer; padding: 3px 6px; border-radius: 5px;
+    transition: background var(--transition), color var(--transition);
+    flex-shrink: 0; overflow: hidden; text-overflow: ellipsis;
+    max-width: 160px;
+  }
+  #breadcrumb .bc-item:hover { background: var(--bg2); color: var(--accent); }
+  #breadcrumb .bc-sep { color: var(--border2); flex-shrink: 0; }
+  #breadcrumb .bc-current { color: var(--text2); font-weight: 500; cursor: default; }
+  #breadcrumb .bc-current:hover { background: none; color: var(--text2); }
+
+  #topbar-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+
+  /* ===== SEARCH BAR ===== */
+  #search-wrap {
+    position: relative; flex-shrink: 0;
+  }
+  #search-input {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 20px; padding: 6px 14px 6px 32px;
+    font-family: var(--font-body); font-size: 0.83rem;
+    color: var(--text); width: 180px;
+    transition: width var(--transition), border-color var(--transition), background var(--transition);
+    outline: none;
+  }
+  #search-input:focus { width: 240px; border-color: var(--accent); background: var(--surface); }
+  #search-input::placeholder { color: var(--text3); }
+  #search-wrap .search-icon {
+    position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+    color: var(--text3); font-size: 0.9rem; pointer-events: none;
+  }
+  #search-results {
+    position: absolute; top: calc(100% + 6px); right: 0;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); box-shadow: var(--shadow2);
+    width: 320px; max-height: 360px; overflow-y: auto;
+    display: none; z-index: 200;
+  }
+  #search-results.visible { display: block; }
+  .search-result-item {
+    padding: 10px 14px; cursor: pointer;
+    border-bottom: 1px solid var(--border);
+    transition: background var(--transition);
+  }
+  .search-result-item:last-child { border-bottom: none; }
+  .search-result-item:hover { background: var(--bg2); }
+  .search-result-item .sr-path { font-size: 0.72rem; color: var(--text3); margin-bottom: 2px; }
+  .search-result-item .sr-title { font-size: 0.88rem; font-weight: 500; color: var(--text); }
+  .search-result-item .sr-snippet { font-size: 0.78rem; color: var(--text2); margin-top: 2px; }
+  .search-result-item .sr-snippet mark { background: var(--yellow-light); color: var(--text); border-radius: 2px; padding: 0 2px; }
+  #search-empty { padding: 16px; text-align: center; color: var(--text3); font-size: 0.85rem; }
+
+  /* ===== ICON BUTTONS ===== */
+  .icon-btn {
+    width: 36px; height: 36px; border: none;
+    background: transparent; cursor: pointer;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; color: var(--text2);
+    transition: background var(--transition), color var(--transition);
+    position: relative;
+  }
+  .icon-btn:hover { background: var(--bg2); color: var(--accent); }
+  .icon-btn.active { color: var(--accent); }
+  .icon-btn .badge {
+    position: absolute; top: 4px; right: 4px;
+    background: var(--accent); color: white;
+    border-radius: 50%; width: 14px; height: 14px;
+    font-size: 0.6rem; display: flex; align-items: center; justify-content: center;
+    font-weight: 600;
+  }
+
+  /* ===== TIMER ===== */
+  #timer-bar {
+    background: var(--bg2); border-bottom: 1px solid var(--border);
+    padding: 6px 20px;
+    display: flex; align-items: center; gap: 14px;
+    font-size: 0.82rem; color: var(--text2);
+  }
+  #timer-bar.hidden { display: none; }
+  #timer-display {
+    font-family: var(--font-mono); font-size: 1.1rem; font-weight: 500;
+    color: var(--accent); min-width: 56px;
+  }
+  #timer-phase { font-size: 0.78rem; color: var(--text3); }
+  .timer-btn {
+    padding: 4px 10px; border: 1px solid var(--border2);
+    background: var(--surface); border-radius: 6px;
+    cursor: pointer; font-size: 0.78rem; font-family: var(--font-body);
+    color: var(--text2);
+    transition: all var(--transition);
+  }
+  .timer-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+  .timer-progress {
+    flex: 1; height: 4px; background: var(--border);
+    border-radius: 2px; overflow: hidden;
+  }
+  .timer-progress-inner {
+    height: 100%; background: var(--accent);
+    border-radius: 2px; transition: width 1s linear;
+  }
+  #timer-sessions { color: var(--text3); font-size: 0.75rem; }
+
+  /* ===== MAIN CONTENT ===== */
+  #main { flex: 1; display: flex; overflow: hidden; }
+
+  /* ===== SIDEBAR ===== */
+  #sidebar {
+    width: 240px; flex-shrink: 0;
+    background: var(--surface2);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    transition: width var(--transition);
+  }
+  #sidebar.collapsed { width: 0; }
+  #sidebar-inner { flex: 1; overflow-y: auto; padding: 12px 8px; }
+  #sidebar-header {
+    padding: 12px 12px 8px;
+    font-size: 0.72rem; font-weight: 600;
+    color: var(--text3); letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-section { margin-bottom: 4px; }
+  .sidebar-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 10px; border-radius: 7px;
+    cursor: pointer; font-size: 0.85rem; color: var(--text2);
+    transition: background var(--transition), color var(--transition);
+    position: relative;
+  }
+  .sidebar-item:hover { background: var(--bg2); color: var(--text); }
+  .sidebar-item.active { background: var(--accent-light); color: var(--accent); font-weight: 500; }
+  .sidebar-item .si-icon { font-size: 1rem; flex-shrink: 0; }
+  .sidebar-item .si-label { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sidebar-item .si-count {
+    font-size: 0.7rem; background: var(--bg3); padding: 1px 6px;
+    border-radius: 10px; color: var(--text3); flex-shrink: 0;
+  }
+
+  /* ===== CONTENT AREA ===== */
+  #content { flex: 1; overflow-y: auto; padding: 24px; }
+
+  /* ===== VIEWS ===== */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* ===== HOME VIEW ===== */
+  #home-header {
+    margin-bottom: 28px;
+  }
+  #home-title {
+    font-family: var(--font-display);
+    font-size: 2rem; font-weight: 700; color: var(--text);
+    margin-bottom: 6px;
+  }
+  #home-title span { color: var(--accent); font-style: italic; }
+  #home-subtitle { color: var(--text3); font-size: 0.9rem; }
+
+  .stats-row {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px; margin-bottom: 28px;
+  }
+  .stat-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius2); padding: 16px;
+    text-align: center;
+  }
+  .stat-card .stat-num {
+    font-family: var(--font-display); font-size: 2rem; font-weight: 700;
+    color: var(--accent); line-height: 1;
+  }
+  .stat-card .stat-label { font-size: 0.78rem; color: var(--text3); margin-top: 4px; }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 1.1rem; font-weight: 600; color: var(--text);
+    margin-bottom: 12px; margin-top: 24px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-title::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+
+  .subjects-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 14px;
+  }
+  .subject-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius2); padding: 18px;
+    cursor: pointer; transition: all var(--transition);
+    position: relative; overflow: hidden;
+  }
+  .subject-card:hover { border-color: var(--accent); box-shadow: var(--shadow2); transform: translateY(-2px); }
+  .subject-card .sc-icon { font-size: 2rem; margin-bottom: 8px; }
+  .subject-card .sc-name {
+    font-family: var(--font-display); font-size: 1rem; font-weight: 600;
+    color: var(--text); margin-bottom: 4px;
+  }
+  .subject-card .sc-count { font-size: 0.78rem; color: var(--text3); }
+  .subject-card .sc-progress {
+    margin-top: 10px; height: 3px; background: var(--border);
+    border-radius: 2px; overflow: hidden;
+  }
+  .subject-card .sc-progress-inner {
+    height: 100%; background: var(--accent); border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+  .add-subject-card {
+    background: transparent;
+    border: 2px dashed var(--border2);
+    border-radius: var(--radius2); padding: 18px;
+    cursor: pointer; transition: all var(--transition);
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; min-height: 100px;
+    color: var(--text3);
+  }
+  .add-subject-card:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+  .add-subject-card .asc-icon { font-size: 1.8rem; margin-bottom: 6px; }
+  .add-subject-card .asc-label { font-size: 0.85rem; }
+
+  /* ===== FOLDER VIEW ===== */
+  #folder-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 20px; gap: 12px;
+  }
+  #folder-title-area {}
+  #folder-title {
+    font-family: var(--font-display);
+    font-size: 1.6rem; font-weight: 700; color: var(--text);
+  }
+  #folder-meta { font-size: 0.82rem; color: var(--text3); margin-top: 4px; }
+  #folder-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+  .btn {
+    padding: 8px 14px; border-radius: 8px; border: none;
+    cursor: pointer; font-family: var(--font-body); font-size: 0.83rem; font-weight: 500;
+    transition: all var(--transition); display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-primary:hover { background: var(--accent2); }
+  .btn-secondary { background: var(--surface); border: 1px solid var(--border2); color: var(--text2); }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-ghost { background: transparent; color: var(--text2); }
+  .btn-ghost:hover { background: var(--bg2); color: var(--text); }
+  .btn-danger { background: var(--red-light); border: 1px solid var(--red); color: var(--red); }
+  .btn-danger:hover { background: var(--red); color: white; }
+  .btn-sm { padding: 5px 10px; font-size: 0.78rem; }
+
+  .folder-progress-bar {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 12px 16px;
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 20px;
+  }
+  .folder-progress-label { font-size: 0.82rem; color: var(--text2); white-space: nowrap; }
+  .folder-progress-track { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .folder-progress-fill { height: 100%; background: var(--green); border-radius: 3px; transition: width 0.4s ease; }
+  .folder-progress-pct { font-size: 0.82rem; font-weight: 600; color: var(--green); white-space: nowrap; }
+
+  .items-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+  }
+  .folder-item {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius2); padding: 16px;
+    cursor: pointer; transition: all var(--transition);
+    position: relative;
+  }
+  .folder-item:hover { border-color: var(--accent); box-shadow: var(--shadow); }
+  .folder-item .fi-icon { font-size: 1.8rem; margin-bottom: 8px; }
+  .folder-item .fi-name { font-size: 0.9rem; font-weight: 500; color: var(--text); margin-bottom: 4px; line-height: 1.3; }
+  .folder-item .fi-meta { font-size: 0.75rem; color: var(--text3); }
+  .folder-item .fi-actions {
+    position: absolute; top: 10px; right: 10px;
+    display: none; gap: 4px;
+  }
+  .folder-item:hover .fi-actions { display: flex; }
+  .fi-action-btn {
+    width: 26px; height: 26px; border: none; border-radius: 5px;
+    background: var(--bg2); cursor: pointer;
+    font-size: 0.8rem; display: flex; align-items: center; justify-content: center;
+    color: var(--text3); transition: all var(--transition);
+  }
+  .fi-action-btn:hover { background: var(--accent); color: white; }
+  .fi-action-btn.danger:hover { background: var(--red); }
+
+  .sheet-item .fi-status {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 0.72rem; padding: 2px 8px; border-radius: 10px;
+    font-weight: 500; margin-top: 6px;
+  }
+  .status-todo { background: var(--bg3); color: var(--text3); }
+  .status-progress { background: var(--yellow-light); color: var(--yellow); }
+  .status-done { background: var(--green-light); color: var(--green); }
+  .sheet-item .fi-fav {
+    position: absolute; top: 10px; right: 10px;
+    font-size: 0.9rem; cursor: pointer;
+    transition: transform var(--transition);
+  }
+  .sheet-item .fi-fav:hover { transform: scale(1.2); }
+
+  /* ===== SHEET EDITOR ===== */
+  #sheet-view { max-width: 860px; margin: 0 auto; }
+  #sheet-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 16px; gap: 12px;
+  }
+  #sheet-title-input {
+    font-family: var(--font-display); font-size: 1.6rem; font-weight: 700;
+    border: none; background: transparent; color: var(--text); width: 100%;
+    outline: none; border-bottom: 2px solid transparent;
+    transition: border-color var(--transition); padding-bottom: 4px;
+  }
+  #sheet-title-input:focus { border-bottom-color: var(--accent); }
+  #sheet-meta { font-size: 0.78rem; color: var(--text3); margin-top: 4px; }
+  #sheet-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+  .status-selector {
+    display: flex; gap: 6px; margin-bottom: 16px;
+  }
+  .status-option {
+    padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 500;
+    cursor: pointer; border: 1.5px solid var(--border);
+    transition: all var(--transition); color: var(--text2);
+  }
+  .status-option:hover { border-color: var(--accent); }
+  .status-option.selected-todo { background: var(--bg3); border-color: var(--text3); color: var(--text3); }
+  .status-option.selected-progress { background: var(--yellow-light); border-color: var(--yellow); color: var(--yellow); }
+  .status-option.selected-done { background: var(--green-light); border-color: var(--green); color: var(--green); }
+
+  /* ===== TOOLBAR ===== */
+  #toolbar {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 6px 8px;
+    display: flex; flex-wrap: wrap; gap: 4px;
+    margin-bottom: 12px; align-items: center;
+    position: sticky; top: 56px; z-index: 50;
+    box-shadow: var(--shadow);
+  }
+  .tb-btn {
+    width: 30px; height: 30px; border: none; border-radius: 5px;
+    background: transparent; cursor: pointer;
+    font-size: 0.85rem; display: flex; align-items: center; justify-content: center;
+    color: var(--text2); transition: all var(--transition);
+    font-family: var(--font-body);
+  }
+  .tb-btn:hover { background: var(--bg2); color: var(--accent); }
+  .tb-btn.active { background: var(--accent-light); color: var(--accent); }
+  .tb-sep { width: 1px; height: 20px; background: var(--border); margin: 0 2px; }
+  .tb-color-btn {
+    width: 24px; height: 24px; border-radius: 50%; cursor: pointer;
+    border: 2px solid transparent; transition: all var(--transition);
+    flex-shrink: 0;
+  }
+  .tb-color-btn:hover, .tb-color-btn.active { border-color: var(--text); transform: scale(1.1); }
+  .tb-select {
+    padding: 3px 6px; border: 1px solid var(--border); border-radius: 5px;
+    font-family: var(--font-body); font-size: 0.8rem; color: var(--text2);
+    background: var(--surface); cursor: pointer; outline: none;
+  }
+  .tb-label {
+    font-size: 0.72rem; color: var(--text3); padding: 0 4px; white-space: nowrap;
+  }
+
+  /* ===== EDITOR ===== */
+  #editor-wrap {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius2); overflow: hidden;
+    box-shadow: var(--shadow);
+    min-height: 500px;
+  }
+  #editor {
+    min-height: 500px; padding: 24px 28px;
+    outline: none; font-family: var(--font-body);
+    font-size: 0.95rem; line-height: 1.7; color: var(--text);
+  }
+  #editor:empty::before {
+    content: 'Commencez à écrire votre cours, exercices ou notes...';
+    color: var(--text3); pointer-events: none;
+  }
+  #editor h1 { font-family: var(--font-display); font-size: 1.5rem; margin: 16px 0 8px; color: var(--text); }
+  #editor h2 { font-family: var(--font-display); font-size: 1.2rem; margin: 14px 0 6px; color: var(--text); }
+  #editor h3 { font-size: 1rem; font-weight: 600; margin: 12px 0 4px; color: var(--text); }
+  #editor p { margin-bottom: 8px; }
+  #editor ul, #editor ol { margin: 6px 0 8px 20px; }
+  #editor li { margin-bottom: 3px; }
+  #editor img { max-width: 100%; border-radius: 8px; margin: 8px 0; }
+  #editor a { color: var(--blue); text-decoration: underline; }
+  #editor blockquote {
+    border-left: 3px solid var(--accent); padding: 8px 16px;
+    margin: 12px 0; background: var(--accent-light); border-radius: 0 8px 8px 0;
+    color: var(--text2);
+  }
+
+  /* Editor special blocks */
+  .block-cours { color: var(--text) !important; }
+  .block-exercice { color: var(--blue) !important; }
+  .block-corrige-container {
+    border: 1px solid var(--red); border-radius: 8px;
+    margin: 8px 0; overflow: hidden;
+  }
+  .block-corrige-header {
+    background: var(--red-light); padding: 6px 12px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 0.8rem; font-weight: 500; color: var(--red);
+    cursor: pointer;
+  }
+  .block-corrige-content {
+    padding: 12px; color: var(--red);
+    font-size: 0.9rem;
+  }
+  .block-corrige-content.hidden { display: none; }
+  .highlight-box {
+    background: var(--yellow-light); border: 1px solid var(--yellow);
+    border-radius: 8px; padding: 10px 14px; margin: 8px 0;
+    font-size: 0.9rem;
+  }
+
+  /* ===== FAVORITES VIEW ===== */
+  .favs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+  .fav-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius2); padding: 14px;
+    cursor: pointer; transition: all var(--transition);
+  }
+  .fav-card:hover { border-color: var(--accent); box-shadow: var(--shadow); }
+  .fav-card .fc-star { font-size: 1.2rem; margin-bottom: 6px; }
+  .fav-card .fc-title { font-weight: 500; font-size: 0.9rem; color: var(--text); margin-bottom: 3px; }
+  .fav-card .fc-path { font-size: 0.75rem; color: var(--text3); }
+
+  /* ===== REVISION VIEW ===== */
+  #revision-view {}
+  .revision-filters {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-bottom: 20px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 12px;
+  }
+  .filter-group { display: flex; align-items: center; gap: 6px; font-size: 0.82rem; }
+  .filter-label { color: var(--text3); }
+  .filter-select {
+    padding: 5px 8px; border: 1px solid var(--border); border-radius: 6px;
+    font-family: var(--font-body); font-size: 0.82rem; color: var(--text2);
+    background: var(--surface); outline: none;
+  }
+  .revision-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius2); overflow: hidden;
+    margin-bottom: 16px; box-shadow: var(--shadow);
+  }
+  .revision-card-header {
+    padding: 14px 18px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .revision-card-title { font-weight: 600; color: var(--text); }
+  .revision-card-path { font-size: 0.75rem; color: var(--text3); margin-top: 2px; }
+  .revision-card-content { padding: 18px; font-size: 0.9rem; line-height: 1.7; color: var(--text2); }
+  .revision-empty {
+    text-align: center; padding: 40px; color: var(--text3);
+    font-size: 0.9rem;
+  }
+
+  /* ===== MODAL ===== */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000; padding: 20px;
+    opacity: 0; pointer-events: none;
+    transition: opacity var(--transition);
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--surface); border-radius: var(--radius2);
+    box-shadow: var(--shadow2); width: 100%; max-width: 480px;
+    max-height: 80vh; overflow-y: auto;
+    transform: translateY(20px); transition: transform var(--transition);
+  }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-header {
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .modal-title { font-family: var(--font-display); font-size: 1.1rem; font-weight: 600; color: var(--text); }
+  .modal-close {
+    width: 28px; height: 28px; border: none; background: var(--bg2);
+    border-radius: 50%; cursor: pointer; font-size: 1.1rem; color: var(--text3);
+    display: flex; align-items: center; justify-content: center;
+    transition: background var(--transition);
+  }
+  .modal-close:hover { background: var(--bg3); }
+  .modal-body { padding: 18px 20px; }
+  .modal-footer { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; gap: 8px; justify-content: flex-end; }
+  .form-group { margin-bottom: 14px; }
+  .form-label { display: block; font-size: 0.82rem; font-weight: 500; color: var(--text2); margin-bottom: 5px; }
+  .form-input {
+    width: 100%; padding: 9px 12px;
+    border: 1px solid var(--border); border-radius: 8px;
+    font-family: var(--font-body); font-size: 0.88rem; color: var(--text);
+    background: var(--surface); outline: none;
+    transition: border-color var(--transition), background var(--transition);
+  }
+  .form-input:focus { border-color: var(--accent); background: var(--surface); }
+  .emoji-grid {
+    display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px;
+    margin-top: 6px;
+  }
+  .emoji-option {
+    width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; border-radius: 7px; cursor: pointer;
+    transition: background var(--transition); border: 1.5px solid transparent;
+  }
+  .emoji-option:hover { background: var(--bg2); }
+  .emoji-option.selected { border-color: var(--accent); background: var(--accent-light); }
+
+  /* ===== TIMER SETTINGS ===== */
+  .timer-setting { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .timer-setting label { font-size: 0.85rem; color: var(--text2); }
+  .timer-number-input {
+    width: 64px; padding: 5px 8px;
+    border: 1px solid var(--border); border-radius: 6px;
+    text-align: center; font-family: var(--font-mono); font-size: 0.9rem;
+    background: var(--surface); color: var(--text); outline: none;
+  }
+
+  /* ===== NOTIFICATIONS ===== */
+  #toast-container {
+    position: fixed; bottom: 20px; right: 20px;
+    z-index: 2000; display: flex; flex-direction: column; gap: 8px;
+  }
+  .toast {
+    background: var(--text); color: var(--surface);
+    padding: 10px 16px; border-radius: 8px;
+    font-size: 0.85rem; box-shadow: var(--shadow2);
+    opacity: 0; transform: translateX(20px);
+    transition: all 0.3s ease;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .toast.show { opacity: 1; transform: translateX(0); }
+  .toast.success { background: var(--green); color: white; }
+  .toast.warning { background: var(--yellow); color: var(--text); }
+  .toast.error { background: var(--red); color: white; }
+
+  /* ===== POMODORO RING ===== */
+  #timer-ring-btn { cursor: pointer; }
+  #timer-ring-btn svg circle.progress {
+    transition: stroke-dashoffset 1s linear;
+    transform-origin: center;
+    transform: rotate(-90deg);
+  }
+
+  /* ===== REVIEW SUMMARY ===== */
+  .review-list { }
+  .review-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; border-radius: 8px;
+    cursor: pointer; transition: background var(--transition);
+    border: 1px solid transparent;
+  }
+  .review-item:hover { background: var(--bg2); border-color: var(--border); }
+  .review-item .ri-dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  }
+  .review-item .ri-title { font-size: 0.88rem; color: var(--text); flex: 1; }
+  .review-item .ri-path { font-size: 0.73rem; color: var(--text3); }
+
+  /* ===== SCROLLBAR ===== */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text3); }
+
+  /* ===== EMPTY STATES ===== */
+  .empty-state {
+    text-align: center; padding: 48px 24px; color: var(--text3);
+  }
+  .empty-state .es-icon { font-size: 3rem; margin-bottom: 12px; }
+  .empty-state .es-title { font-size: 1rem; font-weight: 500; color: var(--text2); margin-bottom: 6px; }
+  .empty-state .es-desc { font-size: 0.85rem; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 640px) {
+    #sidebar { display: none; }
+    #content { padding: 16px; }
+    .subjects-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+  }
+
+  /* ===== PRINT / a11y ===== */
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+
+  /* ===== IMPORT/EXPORT AREA ===== */
+  #file-drop {
+    border: 2px dashed var(--border2); border-radius: var(--radius);
+    padding: 24px; text-align: center; color: var(--text3);
+    cursor: pointer; transition: all var(--transition);
+    font-size: 0.85rem;
+  }
+  #file-drop:hover, #file-drop.over { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+
+  /* ===== ANIMATION ===== */
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .view.active { animation: fadeIn 0.2s ease; }
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
+  .timer-pulse { animation: pulse 1s ease infinite; }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- TOP BAR -->
+  <header id="topbar">
+    <div id="topbar-logo" onclick="showHome()">📚 <span>Atlas</span></div>
+    <nav id="breadcrumb" aria-label="Fil d'Ariane"></nav>
+    <div id="topbar-actions">
+      <div id="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search-input" placeholder="Rechercher..." autocomplete="off" aria-label="Recherche globale">
+        <div id="search-results"></div>
+      </div>
+      <button class="icon-btn" onclick="showFavorites()" title="Favoris" id="fav-btn">⭐</button>
+      <button class="icon-btn" onclick="showRevision()" title="Mode révision">🎯</button>
+      <button class="icon-btn" onclick="toggleTimer()" title="Timer Pomodoro" id="timer-toggle-btn">⏱️</button>
+      <button class="icon-btn" onclick="openTimerSettings()" title="Paramètres timer">⚙️</button>
+      <button class="icon-btn" onclick="openImportExport()" title="Import / Export">💾</button>
+      <button class="icon-btn" onclick="toggleDarkMode()" id="dark-btn" title="Mode sombre">🌙</button>
+    </div>
+  </header>
+
+  <!-- TIMER BAR -->
+  <div id="timer-bar" class="hidden">
+    <span id="timer-display">25:00</span>
+    <span id="timer-phase">Concentration</span>
+    <div class="timer-progress"><div class="timer-progress-inner" id="timer-progress-fill" style="width:100%"></div></div>
+    <span id="timer-sessions">Session 1</span>
+    <button class="timer-btn" onclick="timerStartPause()" id="timer-play-btn">▶ Démarrer</button>
+    <button class="timer-btn" onclick="timerReset()">↺ Réinitialiser</button>
+    <button class="timer-btn" onclick="timerSkip()">⏭ Suivant</button>
+  </div>
+
+  <!-- MAIN -->
+  <div id="main">
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar">
+      <div id="sidebar-header">Navigation</div>
+      <div id="sidebar-inner" id="sidebar-nav"></div>
+    </aside>
+
+    <!-- CONTENT -->
+    <main id="content">
+
+      <!-- HOME VIEW -->
+      <div class="view active" id="home-view">
+        <div id="home-header">
+          <h1 id="home-title">Bienvenue dans <span>Atlas</span></h1>
+          <p id="home-subtitle">Votre espace d'apprentissage personnel et autodidacte</p>
+        </div>
+        <div class="stats-row" id="stats-row"></div>
+        <div id="review-section"></div>
+        <div class="section-title">📁 Mes matières</div>
+        <div class="subjects-grid" id="subjects-grid"></div>
+      </div>
+
+      <!-- FOLDER VIEW -->
+      <div class="view" id="folder-view">
+        <div id="folder-header">
+          <div id="folder-title-area">
+            <h2 id="folder-title"></h2>
+            <p id="folder-meta"></p>
+          </div>
+          <div id="folder-actions">
+            <button class="btn btn-secondary btn-sm" onclick="createFolder()">📁 Nouveau dossier</button>
+            <button class="btn btn-primary btn-sm" onclick="createSheet()">📄 Nouvelle feuille</button>
+          </div>
+        </div>
+        <div class="folder-progress-bar" id="folder-progress-bar">
+          <span class="folder-progress-label" id="folder-progress-label"></span>
+          <div class="folder-progress-track"><div class="folder-progress-fill" id="folder-progress-fill"></div></div>
+          <span class="folder-progress-pct" id="folder-progress-pct"></span>
+        </div>
+        <div class="items-grid" id="items-grid"></div>
+      </div>
+
+      <!-- SHEET VIEW -->
+      <div class="view" id="sheet-view">
+        <div id="sheet-header">
+          <div style="flex:1">
+            <input type="text" id="sheet-title-input" placeholder="Titre de la feuille..." autocomplete="off">
+            <p id="sheet-meta"></p>
+          </div>
+          <div id="sheet-actions">
+            <button class="btn btn-ghost btn-sm" onclick="toggleFavorite()" id="fav-sheet-btn">⭐ Favori</button>
+            <button class="btn btn-secondary btn-sm" onclick="goUpFromSheet()">↑ Dossier parent</button>
+          </div>
+        </div>
+        <div class="status-selector" id="status-selector"></div>
+
+        <!-- TOOLBAR -->
+        <div id="toolbar">
+          <!-- Text style -->
+          <button class="tb-btn" onclick="exec('bold')" title="Gras"><b>B</b></button>
+          <button class="tb-btn" onclick="exec('italic')" title="Italique"><i>I</i></button>
+          <button class="tb-btn" onclick="exec('underline')" title="Souligner"><u>U</u></button>
+          <button class="tb-btn" onclick="exec('strikeThrough')" title="Barré"><s>S</s></button>
+          <div class="tb-sep"></div>
+          <!-- Headings -->
+          <select class="tb-select" onchange="applyHeading(this.value); this.value=''" title="Titre">
+            <option value="">Titre…</option>
+            <option value="h1">Titre 1</option>
+            <option value="h2">Titre 2</option>
+            <option value="h3">Titre 3</option>
+            <option value="p">Normal</option>
+          </select>
+          <div class="tb-sep"></div>
+          <!-- Lists -->
+          <button class="tb-btn" onclick="exec('insertUnorderedList')" title="Liste à puces">☰</button>
+          <button class="tb-btn" onclick="exec('insertOrderedList')" title="Liste numérotée">①</button>
+          <div class="tb-sep"></div>
+          <!-- Align -->
+          <button class="tb-btn" onclick="exec('justifyLeft')" title="Gauche">⬅</button>
+          <button class="tb-btn" onclick="exec('justifyCenter')" title="Centrer">↔</button>
+          <button class="tb-btn" onclick="exec('justifyRight')" title="Droite">➡</button>
+          <div class="tb-sep"></div>
+          <!-- Colors -->
+          <span class="tb-label">Couleur:</span>
+          <div class="tb-color-btn" style="background:#1a1714" title="Cours (noir)" onclick="applyColor('#1a1714')" id="col-black"></div>
+          <div class="tb-color-btn" style="background:#3a6fbc" title="Exercice (bleu)" onclick="applyColor('#3a6fbc')" id="col-blue"></div>
+          <div class="tb-color-btn" style="background:#bc3a3a" title="Corrigé (rouge)" onclick="applyColor('#bc3a3a')" id="col-red"></div>
+          <div class="tb-color-btn" style="background:#3a8c5c" title="Note (vert)" onclick="applyColor('#3a8c5c')" id="col-green"></div>
+          <div class="tb-color-btn" style="background:#c49a2a" title="Important (jaune)" onclick="applyColor('#c49a2a')" id="col-yellow"></div>
+          <div class="tb-sep"></div>
+          <!-- Special blocks -->
+          <button class="tb-btn" onclick="insertBlock('corrige')" title="Bloc corrigé (masquable)" style="font-size:0.7rem;">🔴 Corrigé</button>
+          <button class="tb-btn" onclick="insertBlock('highlight')" title="Bloc mis en évidence" style="font-size:0.7rem;">📌 Encadré</button>
+          <button class="tb-btn" onclick="insertBlock('quote')" title="Citation" style="font-size:0.7rem;">❝ Citation</button>
+          <div class="tb-sep"></div>
+          <!-- Media -->
+          <button class="tb-btn" onclick="insertImageURL()" title="Image via URL" style="font-size:0.7rem;">🖼 URL</button>
+          <button class="tb-btn" onclick="triggerImageUpload()" title="Image locale" style="font-size:0.7rem;">📤 Image</button>
+          <button class="tb-btn" onclick="insertLink()" title="Lien / vidéo" style="font-size:0.7rem;">🔗 Lien</button>
+          <input type="file" id="img-upload" accept="image/*" style="display:none" onchange="handleImageUpload(this)">
+          <div class="tb-sep"></div>
+          <button class="tb-btn" onclick="exec('undo')" title="Annuler">↩</button>
+          <button class="tb-btn" onclick="exec('redo')" title="Refaire">↪</button>
+        </div>
+
+        <div id="editor-wrap">
+          <div id="editor" contenteditable="true" spellcheck="true"></div>
+        </div>
+      </div>
+
+      <!-- FAVORITES VIEW -->
+      <div class="view" id="fav-view">
+        <div class="section-title">⭐ Feuilles favorites</div>
+        <div class="favs-grid" id="favs-grid"></div>
+      </div>
+
+      <!-- REVISION VIEW -->
+      <div class="view" id="revision-view">
+        <div class="section-title">🎯 Mode Révision</div>
+        <div class="revision-filters" id="revision-filters">
+          <div class="filter-group">
+            <span class="filter-label">Matière :</span>
+            <select class="filter-select" id="rev-filter-subject" onchange="loadRevision()">
+              <option value="">Toutes</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <span class="filter-label">Statut :</span>
+            <select class="filter-select" id="rev-filter-status" onchange="loadRevision()">
+              <option value="">Tous</option>
+              <option value="todo">À faire</option>
+              <option value="progress">En cours</option>
+              <option value="done">Maîtrisée</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <span class="filter-label">Nombre :</span>
+            <select class="filter-select" id="rev-count" onchange="loadRevision()">
+              <option value="3">3</option>
+              <option value="5" selected>5</option>
+              <option value="10">10</option>
+              <option value="all">Tous</option>
+            </select>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="loadRevision()">🔀 Mélanger</button>
+        </div>
+        <div id="revision-cards"></div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-title"></span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer" id="modal-footer"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast-container"></div>
+
+<script>
+// ===========================
+// DATA LAYER
+// ===========================
+const STORAGE_KEY = 'atlas_numerique_v1';
+
+let db = {
+  folders: {},      // id -> { id, name, icon, parentId, createdAt }
+  sheets: {},       // id -> { id, name, folderId, content, status, favorite, createdAt, updatedAt }
+  settings: {
+    darkMode: false,
+    timerWork: 25,
+    timerBreak: 5,
+    timerLongBreak: 15,
+    timerSessions: 4,
+    timerVisible: false
+  }
+};
+
+let currentView = 'home';
+let currentFolderId = null;
+let currentSheetId = null;
+let navigationStack = []; // [{type:'folder',id}]
+let saveTimer = null;
+
+function loadDB() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      db = { ...db, ...parsed };
+      if (!db.folders) db.folders = {};
+      if (!db.sheets) db.sheets = {};
+      if (!db.settings) db.settings = {};
+    }
+  } catch(e) { console.warn('Load error', e); }
+}
+
+function saveDB() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); } catch(e) { showToast('Erreur de sauvegarde', 'error'); }
+  }, 300);
+}
+
+function generateId() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+}
+
+// ===========================
+// THEME
+// ===========================
+function toggleDarkMode() {
+  db.settings.darkMode = !db.settings.darkMode;
+  saveDB();
+  applyTheme();
+}
+
+function applyTheme() {
+  document.documentElement.setAttribute('data-theme', db.settings.darkMode ? 'dark' : 'light');
+  document.getElementById('dark-btn').textContent = db.settings.darkMode ? '☀️' : '🌙';
+}
+
+// ===========================
+// NAVIGATION / BREADCRUMB
+// ===========================
+function buildBreadcrumb(path) {
+  // path: [{label, action}]
+  const bc = document.getElementById('breadcrumb');
+  bc.innerHTML = '';
+  const home = document.createElement('span');
+  home.className = 'bc-item';
+  home.textContent = '🏠 Accueil';
+  home.onclick = showHome;
+  bc.appendChild(home);
+  path.forEach((item, i) => {
+    const sep = document.createElement('span');
+    sep.className = 'bc-sep';
+    sep.textContent = '›';
+    bc.appendChild(sep);
+    const el = document.createElement('span');
+    el.className = i === path.length - 1 ? 'bc-item bc-current' : 'bc-item';
+    el.textContent = item.label;
+    if (item.action) el.onclick = item.action;
+    bc.appendChild(el);
+  });
+}
+
+// ===========================
+// HOME
+// ===========================
+function showHome() {
+  setActiveView('home-view');
+  currentFolderId = null;
+  currentSheetId = null;
+  buildBreadcrumb([]);
+  renderStats();
+  renderSubjectsGrid();
+  renderReviewSection();
+  renderSidebar();
+}
+
+function renderStats() {
+  const allFolders = Object.values(db.folders);
+  const allSheets = Object.values(db.sheets);
+  const done = allSheets.filter(s => s.status === 'done').length;
+  const favs = allSheets.filter(s => s.favorite).length;
+  const html = [
+    { num: allFolders.filter(f => !f.parentId).length, label: 'Matières' },
+    { num: allFolders.length, label: 'Dossiers' },
+    { num: allSheets.length, label: 'Feuilles' },
+    { num: done, label: 'Maîtrisées' },
+    { num: favs, label: 'Favoris' }
+  ].map(s => `<div class="stat-card"><div class="stat-num">${s.num}</div><div class="stat-label">${s.label}</div></div>`).join('');
+  document.getElementById('stats-row').innerHTML = html;
+}
+
+function renderSubjectsGrid() {
+  const rootFolders = Object.values(db.folders).filter(f => !f.parentId);
+  const grid = document.getElementById('subjects-grid');
+  let html = rootFolders.map(f => {
+    const stats = getFolderStats(f.id);
+    const pct = stats.total ? Math.round(stats.done / stats.total * 100) : 0;
+    return `<div class="subject-card" onclick="openFolder('${f.id}')">
+      <div class="sc-icon">${f.icon || '📁'}</div>
+      <div class="sc-name">${esc(f.name)}</div>
+      <div class="sc-count">${stats.done}/${stats.total} feuilles maîtrisées</div>
+      <div class="sc-progress"><div class="sc-progress-inner" style="width:${pct}%"></div></div>
+      </div>`;
+  }).join('');
+  html += `<div class="add-subject-card" onclick="createRootFolder()">
+    <div class="asc-icon">➕</div>
+    <div class="asc-label">Nouvelle matière</div>
+  </div>`;
+  grid.innerHTML = html;
+}
+
+function renderReviewSection() {
+  const toReview = Object.values(db.sheets).filter(s => s.status === 'todo' || s.status === 'progress').slice(0, 8);
+  const sec = document.getElementById('review-section');
+  if (!toReview.length) { sec.innerHTML = ''; return; }
+  let html = '<div class="section-title">📋 À revoir</div><div class="review-list">';
+  toReview.forEach(s => {
+    const path = getSheetPath(s.id);
+    const dot = s.status === 'todo' ? 'var(--text3)' : 'var(--yellow)';
+    html += `<div class="review-item" onclick="openSheet('${s.id}')">
+      <div class="ri-dot" style="background:${dot}"></div>
+      <span class="ri-title">${esc(s.name)}</span>
+      <span class="ri-path">${esc(path)}</span>
+    </div>`;
+  });
+  html += '</div>';
+  sec.innerHTML = html;
+}
+
+// ===========================
+// FOLDER VIEW
+// ===========================
+function openFolder(id) {
+  const folder = db.folders[id];
+  if (!folder) return;
+  currentFolderId = id;
+  currentSheetId = null;
+  setActiveView('folder-view');
+
+  // Build breadcrumb
+  const ancestors = getAncestors(id);
+  const bcPath = ancestors.map(a => ({ label: (a.icon || '📁') + ' ' + a.name, action: () => openFolder(a.id) }));
+  bcPath.push({ label: (folder.icon || '📁') + ' ' + folder.name });
+  buildBreadcrumb(bcPath);
+
+  document.getElementById('folder-title').textContent = (folder.icon || '📁') + ' ' + folder.name;
+
+  const stats = getFolderStats(id);
+  const pct = stats.total ? Math.round(stats.done / stats.total * 100) : 0;
+  document.getElementById('folder-meta').textContent = `${stats.total} feuille(s) · Créé le ${formatDate(folder.createdAt)}`;
+  document.getElementById('folder-progress-label').textContent = `${stats.done}/${stats.total} feuilles maîtrisées`;
+  document.getElementById('folder-progress-fill').style.width = pct + '%';
+  document.getElementById('folder-progress-pct').textContent = pct + '%';
+
+  renderFolderItems(id);
+  renderSidebar();
+}
+
+function renderFolderItems(folderId) {
+  const subFolders = Object.values(db.folders).filter(f => f.parentId === folderId);
+  const sheets = Object.values(db.sheets).filter(s => s.folderId === folderId);
+  const grid = document.getElementById('items-grid');
+
+  if (!subFolders.length && !sheets.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+      <div class="es-icon">📭</div>
+      <div class="es-title">Ce dossier est vide</div>
+      <div class="es-desc">Créez un sous-dossier ou une nouvelle feuille pour commencer.</div>
+    </div>`;
+    return;
+  }
+
+  let html = '';
+  subFolders.forEach(f => {
+    const stats = getFolderStats(f.id);
+    const pct = stats.total ? Math.round(stats.done / stats.total * 100) : 0;
+    html += `<div class="folder-item" onclick="openFolder('${f.id}')">
+      <div class="fi-icon">${f.icon || '📁'}</div>
+      <div class="fi-name">${esc(f.name)}</div>
+      <div class="fi-meta">${stats.total} feuille(s)</div>
+      <div class="sc-progress" style="margin-top:8px"><div class="sc-progress-inner" style="width:${pct}%"></div></div>
+      <div class="fi-actions">
+        <button class="fi-action-btn" onclick="event.stopPropagation();renameFolder('${f.id}')" title="Renommer">✏️</button>
+        <button class="fi-action-btn danger" onclick="event.stopPropagation();deleteFolder('${f.id}')" title="Supprimer">🗑️</button>
+      </div>
+    </div>`;
+  });
+
+  sheets.forEach(s => {
+    const statusClass = { todo: 'status-todo', progress: 'status-progress', done: 'status-done' }[s.status || 'todo'];
+    const statusLabel = { todo: '📌 À faire', progress: '⏳ En cours', done: '✅ Maîtrisée' }[s.status || 'todo'];
+    const star = s.favorite ? '⭐' : '☆';
+    html += `<div class="folder-item sheet-item" onclick="openSheet('${s.id}')">
+      <div class="fi-icon">📄</div>
+      <div class="fi-name">${esc(s.name)}</div>
+      <div class="fi-meta">${formatDate(s.updatedAt || s.createdAt)}</div>
+      <div class="fi-status ${statusClass}">${statusLabel}</div>
+      <span class="fi-fav" onclick="event.stopPropagation();toggleFavoriteById('${s.id}')" title="Favori">${star}</span>
+      <div class="fi-actions" style="top:32px">
+        <button class="fi-action-btn" onclick="event.stopPropagation();renameSheet('${s.id}')" title="Renommer">✏️</button>
+        <button class="fi-action-btn danger" onclick="event.stopPropagation();deleteSheet('${s.id}')" title="Supprimer">🗑️</button>
+      </div>
+    </div>`;
+  });
+
+  grid.innerHTML = html;
+}
+
+// ===========================
+// SHEET VIEW
+// ===========================
+function openSheet(id) {
+  const sheet = db.sheets[id];
+  if (!sheet) return;
+  currentSheetId = id;
+  setActiveView('sheet-view');
+
+  const folder = db.folders[sheet.folderId];
+  const ancestors = sheet.folderId ? getAncestors(sheet.folderId) : [];
+  if (folder) ancestors.push(folder);
+  const bcPath = ancestors.map(a => ({ label: (a.icon || '📁') + ' ' + a.name, action: () => openFolder(a.id) }));
+  bcPath.push({ label: '📄 ' + sheet.name });
+  buildBreadcrumb(bcPath);
+
+  document.getElementById('sheet-title-input').value = sheet.name;
+  document.getElementById('sheet-meta').textContent = `Mise à jour : ${formatDate(sheet.updatedAt || sheet.createdAt)}`;
+  document.getElementById('editor').innerHTML = sheet.content || '';
+  renderStatusSelector(sheet.status || 'todo');
+  updateFavBtn(sheet.favorite);
+
+  // Editor autosave
+  const editor = document.getElementById('editor');
+  editor.oninput = () => autoSaveSheet();
+  document.getElementById('sheet-title-input').oninput = () => autoSaveSheet();
+  renderSidebar();
+}
+
+function autoSaveSheet() {
+  if (!currentSheetId) return;
+  const sheet = db.sheets[currentSheetId];
+  if (!sheet) return;
+  sheet.name = document.getElementById('sheet-title-input').value || 'Sans titre';
+  sheet.content = document.getElementById('editor').innerHTML;
+  sheet.updatedAt = new Date().toISOString();
+  saveDB();
+}
+
+function renderStatusSelector(current) {
+  const opts = [
+    { value: 'todo', label: '📌 À faire', cls: 'selected-todo' },
+    { value: 'progress', label: '⏳ En cours', cls: 'selected-progress' },
+    { value: 'done', label: '✅ Maîtrisée', cls: 'selected-done' }
+  ];
+  const sel = document.getElementById('status-selector');
+  sel.innerHTML = opts.map(o => `<div class="status-option${current === o.value ? ' ' + o.cls : ''}"
+    onclick="setSheetStatus('${o.value}')">${o.label}</div>`).join('');
+}
+
+function setSheetStatus(status) {
+  if (!currentSheetId) return;
+  db.sheets[currentSheetId].status = status;
+  db.sheets[currentSheetId].updatedAt = new Date().toISOString();
+  saveDB();
+  renderStatusSelector(status);
+  showToast('Statut mis à jour', 'success');
+}
+
+function toggleFavorite() {
+  if (!currentSheetId) return;
+  toggleFavoriteById(currentSheetId);
+  updateFavBtn(db.sheets[currentSheetId].favorite);
+}
+
+function toggleFavoriteById(id) {
+  const sheet = db.sheets[id];
+  if (!sheet) return;
+  sheet.favorite = !sheet.favorite;
+  saveDB();
+  if (currentSheetId === id) updateFavBtn(sheet.favorite);
+  if (currentFolderId) renderFolderItems(currentFolderId);
+  showToast(sheet.favorite ? '⭐ Ajouté aux favoris' : 'Retiré des favoris');
+}
+
+function updateFavBtn(fav) {
+  const btn = document.getElementById('fav-sheet-btn');
+  btn.textContent = fav ? '⭐ Favori' : '☆ Favori';
+  btn.style.color = fav ? 'var(--yellow)' : '';
+}
+
+function goUpFromSheet() {
+  if (!currentSheetId) return;
+  const sheet = db.sheets[currentSheetId];
+  if (sheet && sheet.folderId) openFolder(sheet.folderId);
+  else showHome();
+}
+
+// ===========================
+// EDITOR COMMANDS
+// ===========================
+function exec(cmd, val) {
+  document.getElementById('editor').focus();
+  document.execCommand(cmd, false, val || null);
+}
+
+function applyHeading(tag) {
+  if (!tag) return;
+  document.getElementById('editor').focus();
+  document.execCommand('formatBlock', false, tag);
+}
+
+function applyColor(color) {
+  document.getElementById('editor').focus();
+  document.execCommand('foreColor', false, color);
+}
+
+function insertBlock(type) {
+  document.getElementById('editor').focus();
+  let html = '';
+  if (type === 'corrige') {
+    const id = 'corrige_' + generateId();
+    html = `<div class="block-corrige-container" contenteditable="false">
+      <div class="block-corrige-header" onclick="toggleCorrige('${id}')">
+        <span>🔴 Corrigé</span><span id="btn_${id}">👁 Afficher</span>
+      </div>
+      <div class="block-corrige-content hidden" id="${id}" contenteditable="true">
+        Écrivez votre corrigé ici...
+      </div>
+    </div><p></p>`;
+  } else if (type === 'highlight') {
+    html = `<div class="highlight-box" contenteditable="true">📌 Encadré important...</div><p></p>`;
+  } else if (type === 'quote') {
+    html = `<blockquote contenteditable="true">Citation ou définition...</blockquote><p></p>`;
+  }
+  document.execCommand('insertHTML', false, html);
+}
+
+function toggleCorrige(id) {
+  const el = document.getElementById(id);
+  const btn = document.getElementById('btn_' + id);
+  if (!el) return;
+  el.classList.toggle('hidden');
+  btn.textContent = el.classList.contains('hidden') ? '👁 Afficher' : '🙈 Masquer';
+}
+
+function insertImageURL() {
+  const url = prompt('URL de l\'image :');
+  if (url) exec('insertHTML', `<img src="${url}" alt="Image">`);
+}
+
+function triggerImageUpload() {
+  document.getElementById('img-upload').click();
+}
+
+function handleImageUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    exec('insertHTML', `<img src="${e.target.result}" alt="${file.name}" style="max-width:100%">`);
+    autoSaveSheet();
+  };
+  reader.readAsDataURL(file);
+  input.value = '';
+}
+
+function insertLink() {
+  const url = prompt('URL du lien ou de la vidéo :');
+  if (!url) return;
+  const text = prompt('Texte du lien :', url);
+  exec('insertHTML', `<a href="${url}" target="_blank">${text || url}</a>`);
+}
+
+// ===========================
+// CREATE / RENAME / DELETE
+// ===========================
+function createRootFolder() { createFolderIn(null); }
+function createFolder() { createFolderIn(currentFolderId); }
+
+function createFolderIn(parentId) {
+  const emojis = ['📐','📏','🔬','⚗️','🧬','🧲','🌍','🌊','🌿','💡','🎨','📖','🎭','🎵','🏛️','⚖️','💻','🔢','📊','🗺️'];
+  openModal('Nouveau dossier', `
+    <div class="form-group"><label class="form-label">Nom du dossier</label>
+    <input type="text" class="form-input" id="new-folder-name" placeholder="Ex: Mathématiques" autofocus></div>
+    <div class="form-group"><label class="form-label">Icône</label>
+    <div class="emoji-grid" id="emoji-grid">
+    ${emojis.map(e => `<div class="emoji-option" onclick="selectEmoji('${e}',this)">${e}</div>`).join('')}
+    </div></div>
+  `, [
+    { label: 'Annuler', cls: 'btn btn-secondary', action: closeModal },
+    { label: 'Créer', cls: 'btn btn-primary', action: () => {
+      const name = document.getElementById('new-folder-name').value.trim();
+      const sel = document.querySelector('.emoji-option.selected');
+      const icon = sel ? sel.textContent : '📁';
+      if (!name) return showToast('Entrez un nom', 'error');
+      const id = generateId();
+      db.folders[id] = { id, name, icon, parentId, createdAt: new Date().toISOString() };
+      saveDB();
+      closeModal();
+      if (!parentId) { renderSubjectsGrid(); renderSidebar(); }
+      else { renderFolderItems(currentFolderId); }
+      showToast('📁 Dossier créé', 'success');
+    }}
+  ]);
+}
+
+let selectedEmoji = '';
+function selectEmoji(e, el) {
+  document.querySelectorAll('.emoji-option').forEach(x => x.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedEmoji = e;
+}
+
+function createSheet() {
+  if (!currentFolderId) return;
+  openModal('Nouvelle feuille', `
+    <div class="form-group"><label class="form-label">Titre de la feuille</label>
+    <input type="text" class="form-input" id="new-sheet-name" placeholder="Ex: Chapitre 1 - Introduction" autofocus></div>
+  `, [
+    { label: 'Annuler', cls: 'btn btn-secondary', action: closeModal },
+    { label: 'Créer', cls: 'btn btn-primary', action: () => {
+      const name = document.getElementById('new-sheet-name').value.trim();
+      if (!name) return showToast('Entrez un titre', 'error');
+      const id = generateId();
+      const now = new Date().toISOString();
+      db.sheets[id] = { id, name, folderId: currentFolderId, content: '', status: 'todo', favorite: false, createdAt: now, updatedAt: now };
+      saveDB();
+      closeModal();
+      openSheet(id);
+      showToast('📄 Feuille créée', 'success');
+    }}
+  ]);
+}
+
+function renameFolder(id) {
+  const f = db.folders[id];
+  openModal('Renommer', `
+    <div class="form-group"><label class="form-label">Nom</label>
+    <input type="text" class="form-input" id="rename-val" value="${esc(f.name)}" autofocus></div>
+  `, [
+    { label: 'Annuler', cls: 'btn btn-secondary', action: closeModal },
+    { label: 'Renommer', cls: 'btn btn-primary', action: () => {
+      const v = document.getElementById('rename-val').value.trim();
+      if (!v) return;
+      f.name = v; saveDB(); closeModal();
+      if (currentFolderId) renderFolderItems(currentFolderId);
+      else renderSubjectsGrid();
+      renderSidebar();
+    }}
+  ]);
+}
+
+function renameSheet(id) {
+  const s = db.sheets[id];
+  openModal('Renommer', `
+    <div class="form-group"><label class="form-label">Titre</label>
+    <input type="text" class="form-input" id="rename-val" value="${esc(s.name)}" autofocus></div>
+  `, [
+    { label: 'Annuler', cls: 'btn btn-secondary', action: closeModal },
+    { label: 'Renommer', cls: 'btn btn-primary', action: () => {
+      const v = document.getElementById('rename-val').value.trim();
+      if (!v) return;
+      s.name = v; s.updatedAt = new Date().toISOString(); saveDB(); closeModal();
+      if (currentFolderId) renderFolderItems(currentFolderId);
+    }}
+  ]);
+}
+
+function deleteFolder(id) {
+  openModal('Supprimer le dossier', `<p style="color:var(--text2)">Supprimer ce dossier et tout son contenu ? Cette action est irréversible.</p>`, [
+    { label: 'Annuler', cls: 'btn btn-secondary', action: closeModal },
+    { label: 'Supprimer', cls: 'btn btn-danger', action: () => {
+      deleteFolderRecursive(id);
+      saveDB(); closeModal();
+      if (currentFolderId === id) { const p = db.folders[id]?.parentId; p ? openFolder(p) : showHome(); }
+      else renderFolderItems(currentFolderId);
+      renderSidebar();
+      showToast('Dossier supprimé');
+    }}
+  ]);
+}
+
+function deleteFolderRecursive(id) {
+  Object.values(db.sheets).filter(s => s.folderId === id).forEach(s => delete db.sheets[s.id]);
+  Object.values(db.folders).filter(f => f.parentId === id).forEach(f => deleteFolderRecursive(f.id));
+  delete db.folders[id];
+}
+
+function deleteSheet(id) {
+  openModal('Supprimer la feuille', `<p style="color:var(--text2)">Supprimer définitivement cette feuille ?</p>`, [
+    { label: 'Annuler', cls: 'btn btn-secondary', action: closeModal },
+    { label: 'Supprimer', cls: 'btn btn-danger', action: () => {
+      delete db.sheets[id];
+      saveDB(); closeModal();
+      if (currentSheetId === id) { if (currentFolderId) openFolder(currentFolderId); else showHome(); }
+      else if (currentFolderId) renderFolderItems(currentFolderId);
+      showToast('Feuille supprimée');
+    }}
+  ]);
+}
+
+// ===========================
+// FAVORITES
+// ===========================
+function showFavorites() {
+  setActiveView('fav-view');
+  buildBreadcrumb([{ label: '⭐ Favoris' }]);
+  const favs = Object.values(db.sheets).filter(s => s.favorite);
+  const grid = document.getElementById('favs-grid');
+  if (!favs.length) {
+    grid.innerHTML = `<div class="empty-state"><div class="es-icon">☆</div><div class="es-title">Aucun favori</div><div class="es-desc">Marquez des feuilles avec ⭐ pour les retrouver ici.</div></div>`;
+    return;
+  }
+  grid.innerHTML = favs.map(s => `<div class="fav-card" onclick="openSheet('${s.id}')">
+    <div class="fc-star">⭐</div>
+    <div class="fc-title">${esc(s.name)}</div>
+    <div class="fc-path">${esc(getSheetPath(s.id))}</div>
+  </div>`).join('');
+}
+
+// ===========================
+// REVISION
+// ===========================
+function showRevision() {
+  setActiveView('revision-view');
+  buildBreadcrumb([{ label: '🎯 Révision' }]);
+  // Populate subject filter
+  const sel = document.getElementById('rev-filter-subject');
+  const roots = Object.values(db.folders).filter(f => !f.parentId);
+  sel.innerHTML = '<option value="">Toutes les matières</option>' + roots.map(f => `<option value="${f.id}">${f.name}</option>`).join('');
+  loadRevision();
+}
+
+function loadRevision() {
+  const subjectFilter = document.getElementById('rev-filter-subject').value;
+  const statusFilter = document.getElementById('rev-filter-status').value;
+  const countFilter = document.getElementById('rev-count').value;
+
+  let sheets = Object.values(db.sheets);
+  if (statusFilter) sheets = sheets.filter(s => s.status === statusFilter);
+  if (subjectFilter) {
+    const ids = getAllFolderIds(subjectFilter);
+    sheets = sheets.filter(s => ids.has(s.folderId));
+  }
+
+  // Shuffle
+  sheets = sheets.sort(() => Math.random() - 0.5);
+  if (countFilter !== 'all') sheets = sheets.slice(0, parseInt(countFilter));
+
+  const container = document.getElementById('revision-cards');
+  if (!sheets.length) {
+    container.innerHTML = `<div class="revision-empty">Aucune feuille trouvée avec ces filtres.<br>Créez des feuilles et ajoutez du contenu !</div>`;
+    return;
+  }
+
+  container.innerHTML = sheets.map(s => {
+    const preview = stripHTML(s.content).slice(0, 200);
+    const path = getSheetPath(s.id);
+    const statusLabel = { todo: '📌 À faire', progress: '⏳ En cours', done: '✅ Maîtrisée' }[s.status || 'todo'];
+    return `<div class="revision-card">
+      <div class="revision-card-header">
+        <div>
+          <div class="revision-card-title">${esc(s.name)}</div>
+          <div class="revision-card-path">${esc(path)}</div>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <span style="font-size:0.78rem;color:var(--text3)">${statusLabel}</span>
+          <button class="btn btn-primary btn-sm" onclick="openSheet('${s.id}')">Ouvrir</button>
+        </div>
+      </div>
+      <div class="revision-card-content">${preview ? esc(preview) + (preview.length >= 200 ? '…' : '') : '<em>Feuille vide</em>'}</div>
+    </div>`;
+  }).join('');
+}
+
+// ===========================
+// SEARCH
+// ===========================
+document.getElementById('search-input').addEventListener('input', function() {
+  const q = this.value.trim().toLowerCase();
+  const res = document.getElementById('search-results');
+  if (q.length < 2) { res.classList.remove('visible'); return; }
+  const matches = [];
+  Object.values(db.sheets).forEach(s => {
+    const text = (s.name + ' ' + stripHTML(s.content)).toLowerCase();
+    const idx = text.indexOf(q);
+    if (idx !== -1) {
+      const snippet = text.slice(Math.max(0, idx - 30), idx + 80);
+      const highlighted = snippet.replace(new RegExp(q, 'gi'), m => `<mark>${m}</mark>`);
+      matches.push({ sheet: s, snippet: highlighted });
+    }
+  });
+  if (!matches.length) {
+    res.innerHTML = '<div id="search-empty">Aucun résultat trouvé.</div>';
+    res.classList.add('visible');
+    return;
+  }
+  res.innerHTML = matches.slice(0, 10).map(m =>
+    `<div class="search-result-item" onclick="openSheet('${m.sheet.id}');closeSearch()">
+      <div class="sr-path">${esc(getSheetPath(m.sheet.id))}</div>
+      <div class="sr-title">${esc(m.sheet.name)}</div>
+      <div class="sr-snippet">${m.snippet}</div>
+    </div>`
+  ).join('');
+  res.classList.add('visible');
+});
+
+function closeSearch() {
+  document.getElementById('search-input').value = '';
+  document.getElementById('search-results').classList.remove('visible');
+}
+
+document.addEventListener('click', e => {
+  if (!document.getElementById('search-wrap').contains(e.target)) closeSearch();
+});
+
+// ===========================
+// SIDEBAR
+// ===========================
+function renderSidebar() {
+  const inner = document.getElementById('sidebar-inner');
+  const roots = Object.values(db.folders).filter(f => !f.parentId);
+  let html = `<div class="sidebar-section">
+    <div class="sidebar-item${currentView==='home-view'?' active':''}" onclick="showHome()">
+      <span class="si-icon">🏠</span><span class="si-label">Accueil</span>
+    </div>
+    <div class="sidebar-item${currentView==='fav-view'?' active':''}" onclick="showFavorites()">
+      <span class="si-icon">⭐</span><span class="si-label">Favoris</span>
+      <span class="si-count">${Object.values(db.sheets).filter(s=>s.favorite).length}</span>
+    </div>
+    <div class="sidebar-item${currentView==='revision-view'?' active':''}" onclick="showRevision()">
+      <span class="si-icon">🎯</span><span class="si-label">Révision</span>
+    </div>
+  </div>`;
+  if (roots.length) {
+    html += '<div style="padding:8px 10px 4px;font-size:0.7rem;color:var(--text3);letter-spacing:0.07em;text-transform:uppercase">Matières</div>';
+    roots.forEach(f => {
+      const active = currentFolderId === f.id || isAncestorOf(f.id);
+      html += `<div class="sidebar-item${active?' active':''}" onclick="openFolder('${f.id}')">
+        <span class="si-icon">${f.icon||'📁'}</span>
+        <span class="si-label">${esc(f.name)}</span>
+      </div>`;
+    });
+  }
+  inner.innerHTML = html;
+}
+
+// ===========================
+// TIMER (POMODORO)
+// ===========================
+let timerInterval = null;
+let timerRunning = false;
+let timerSeconds = 0;
+let timerTotalSeconds = 0;
+let timerPhase = 'work'; // work | break | longBreak
+let timerSessionCount = 0;
+
+function initTimer() {
+  timerTotalSeconds = db.settings.timerWork * 60;
+  timerSeconds = timerTotalSeconds;
+  updateTimerDisplay();
+}
+
+function toggleTimer() {
+  const bar = document.getElementById('timer-bar');
+  const hidden = bar.classList.contains('hidden');
+  bar.classList.toggle('hidden', !hidden);
+  db.settings.timerVisible = hidden;
+  saveDB();
+}
+
+function timerStartPause() {
+  const btn = document.getElementById('timer-play-btn');
+  if (timerRunning) {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    btn.textContent = '▶ Reprendre';
+  } else {
+    timerRunning = true;
+    btn.textContent = '⏸ Pause';
+    timerInterval = setInterval(timerTick, 1000);
+  }
+}
+
+function timerTick() {
+  timerSeconds--;
+  updateTimerDisplay();
+  if (timerSeconds <= 0) {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    timerPhaseComplete();
+  }
+}
+
+function timerPhaseComplete() {
+  playTimerSound();
+  if (timerPhase === 'work') {
+    timerSessionCount++;
+    const longBreakInterval = db.settings.timerSessions || 4;
+    if (timerSessionCount % longBreakInterval === 0) {
+      timerPhase = 'longBreak';
+      timerTotalSeconds = (db.settings.timerLongBreak || 15) * 60;
+      showToast('🎉 Longue pause ! ' + (db.settings.timerLongBreak || 15) + ' minutes', 'success');
+    } else {
+      timerPhase = 'break';
+      timerTotalSeconds = (db.settings.timerBreak || 5) * 60;
+      showToast('☕ Pause ! ' + (db.settings.timerBreak || 5) + ' minutes');
+    }
+  } else {
+    timerPhase = 'work';
+    timerTotalSeconds = (db.settings.timerWork || 25) * 60;
+    showToast('📚 C\'est reparti ! Session ' + (timerSessionCount + 1));
+  }
+  timerSeconds = timerTotalSeconds;
+  updateTimerDisplay();
+  document.getElementById('timer-play-btn').textContent = '▶ Démarrer';
+}
+
+function timerReset() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  timerPhase = 'work';
+  timerSessionCount = 0;
+  timerTotalSeconds = (db.settings.timerWork || 25) * 60;
+  timerSeconds = timerTotalSeconds;
+  updateTimerDisplay();
+  document.getElementById('timer-play-btn').textContent = '▶ Démarrer';
+}
+
+function timerSkip() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  timerPhaseComplete();
+}
+
+function updateTimerDisplay() {
+  const m = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
+  const s = String(timerSeconds % 60).padStart(2, '0');
+  document.getElementById('timer-display').textContent = m + ':' + s;
+  const pct = timerTotalSeconds ? (timerSeconds / timerTotalSeconds) * 100 : 100;
+  document.getElementById('timer-progress-fill').style.width = pct + '%';
+  const phaseNames = { work: '💡 Concentration', break: '☕ Pause', longBreak: '🌟 Grande pause' };
+  document.getElementById('timer-phase').textContent = phaseNames[timerPhase] || '';
+  document.getElementById('timer-sessions').textContent = 'Session ' + (timerSessionCount + 1);
+}
+
+function playTimerSound() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.frequency.value = 880;
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.8);
+    osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.8);
+  } catch(e) {}
+}
+
+function openTimerSettings() {
+  openModal('Paramètres du timer', `
+    <div class="timer-setting">
+      <label>Durée de concentration (min)</label>
+      <input type="number" class="timer-number-input" id="ts-work" value="${db.settings.timerWork || 25}" min="1" max="120">
+    </div>
+    <div class="timer-setting">
+      <label>Durée de pause courte (min)</label>
+      <input type="number" class="timer-number-input" id="ts-break" value="${db.settings.timerBreak || 5}" min="1" max="30">
+    </div>
+    <div class="timer-setting">
+      <label>Durée de pause longue (min)</label>
+      <input type="number" class="timer-number-input" id="ts-long" value="${db.settings.timerLongBreak || 15}" min="1" max="60">
+    </div>
+    <div class="timer-setting">
+      <label>Sessions avant pause longue</label>
+      <input type="number" class="timer-number-input" id="ts-sessions" value="${db.settings.timerSessions || 4}" min="1" max="10">
+    </div>
+  `, [
+    { label: 'Annuler', cls: 'btn btn-secondary', action: closeModal },
+    { label: 'Enregistrer', cls: 'btn btn-primary', action: () => {
+      db.settings.timerWork = parseInt(document.getElementById('ts-work').value) || 25;
+      db.settings.timerBreak = parseInt(document.getElementById('ts-break').value) || 5;
+      db.settings.timerLongBreak = parseInt(document.getElementById('ts-long').value) || 15;
+      db.settings.timerSessions = parseInt(document.getElementById('ts-sessions').value) || 4;
+      saveDB(); timerReset(); closeModal();
+      showToast('Paramètres sauvegardés', 'success');
+    }}
+  ]);
+}
+
+// ===========================
+// IMPORT / EXPORT
+// ===========================
+function openImportExport() {
+  openModal('Import / Export', `
+    <p style="font-size:0.85rem;color:var(--text2);margin-bottom:16px">Sauvegardez ou transférez toute votre bibliothèque.</p>
+    <div style="display:flex;gap:8px;margin-bottom:20px">
+      <button class="btn btn-primary" onclick="exportJSON()" style="flex:1">📤 Exporter en JSON</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Importer depuis un fichier JSON</label>
+      <div id="file-drop" onclick="document.getElementById('import-file').click()">
+        📂 Cliquez pour choisir un fichier JSON<br><small>ou glissez-déposez ici</small>
+      </div>
+      <input type="file" id="import-file" accept=".json" style="display:none" onchange="importJSON(this)">
+    </div>
+    <p style="font-size:0.75rem;color:var(--red);margin-top:8px">⚠️ L'import remplacera toutes vos données actuelles.</p>
+  `, [{ label: 'Fermer', cls: 'btn btn-secondary', action: closeModal }]);
+
+  // Drag & drop
+  setTimeout(() => {
+    const drop = document.getElementById('file-drop');
+    if (!drop) return;
+    drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('over'); });
+    drop.addEventListener('dragleave', () => drop.classList.remove('over'));
+    drop.addEventListener('drop', e => {
+      e.preventDefault(); drop.classList.remove('over');
+      const file = e.dataTransfer.files[0];
+      if (file) readJSONFile(file);
+    });
+  }, 100);
+}
+
+function exportJSON() {
+  const data = JSON.stringify(db, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'cahier_numerique_' + new Date().toISOString().slice(0,10) + '.json';
+  a.click(); URL.revokeObjectURL(url);
+  showToast('📤 Export réussi', 'success');
+}
+
+function importJSON(input) {
+  const file = input.files[0];
+  if (file) readJSONFile(file);
+  input.value = '';
+}
+
+function readJSONFile(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!data.folders || !data.sheets) throw new Error('Format invalide');
+      db = { ...db, ...data };
+      saveDB(); closeModal(); showHome();
+      showToast('📥 Import réussi', 'success');
+    } catch(err) {
+      showToast('Fichier invalide', 'error');
+    }
+  };
+  reader.readAsText(file);
+}
+
+// ===========================
+// MODAL
+// ===========================
+function openModal(title, bodyHTML, buttons) {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-body').innerHTML = bodyHTML;
+  document.getElementById('modal-footer').innerHTML = '';
+  (buttons || []).forEach(b => {
+    const btn = document.createElement('button');
+    btn.className = b.cls || 'btn btn-secondary';
+    btn.textContent = b.label;
+    btn.onclick = b.action;
+    document.getElementById('modal-footer').appendChild(btn);
+  });
+  document.getElementById('modal-overlay').classList.add('open');
+  // Focus first input
+  setTimeout(() => {
+    const inp = document.querySelector('#modal-body input[autofocus], #modal-body input');
+    if (inp) inp.focus();
+  }, 100);
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+
+document.getElementById('modal-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+
+// ===========================
+// TOAST
+// ===========================
+function showToast(msg, type = '') {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.textContent = msg;
+  container.appendChild(toast);
+  setTimeout(() => toast.classList.add('show'), 10);
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => container.removeChild(toast), 300);
+  }, 2800);
+}
+
+// ===========================
+// HELPERS
+// ===========================
+function setActiveView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  currentView = id;
+  renderSidebar();
+}
+
+function getFolderStats(folderId) {
+  let total = 0, done = 0;
+  const collectStats = (id) => {
+    Object.values(db.sheets).filter(s => s.folderId === id).forEach(s => {
+      total++; if (s.status === 'done') done++;
+    });
+    Object.values(db.folders).filter(f => f.parentId === id).forEach(f => collectStats(f.id));
+  };
+  collectStats(folderId);
+  return { total, done };
+}
+
+function getAncestors(folderId) {
+  const chain = [];
+  let current = db.folders[folderId];
+  while (current && current.parentId) {
+    current = db.folders[current.parentId];
+    if (current) chain.unshift(current);
+  }
+  return chain;
+}
+
+function getSheetPath(sheetId) {
+  const sheet = db.sheets[sheetId];
+  if (!sheet || !sheet.folderId) return '';
+  const folder = db.folders[sheet.folderId];
+  if (!folder) return '';
+  const ancestors = getAncestors(sheet.folderId);
+  ancestors.push(folder);
+  return ancestors.map(a => a.name).join(' › ');
+}
+
+function getAllFolderIds(rootId) {
+  const ids = new Set([rootId]);
+  const collect = (id) => {
+    Object.values(db.folders).filter(f => f.parentId === id).forEach(f => { ids.add(f.id); collect(f.id); });
+  };
+  collect(rootId);
+  return ids;
+}
+
+function isAncestorOf(folderId) {
+  if (!currentFolderId && !currentSheetId) return false;
+  const targetId = currentFolderId || (currentSheetId ? db.sheets[currentSheetId]?.folderId : null);
+  if (!targetId) return false;
+  let id = targetId;
+  while (id) {
+    if (id === folderId) return true;
+    id = db.folders[id]?.parentId;
+  }
+  return false;
+}
+
+function esc(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function stripHTML(html) {
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html || '';
+  return tmp.textContent || tmp.innerText || '';
+}
+
+function formatDate(iso) {
+  if (!iso) return '';
+  try {
+    return new Date(iso).toLocaleDateString('fr-FR', { day:'2-digit', month:'2-digit', year:'numeric' });
+  } catch(e) { return iso; }
+}
+
+// ===========================
+// WELCOME DATA (first launch)
+// ===========================
+// INIT — must run after ALL declarations
+// ===========================
+loadDB();
+
+// Seed welcome folders on first launch
+if (!Object.keys(db.folders).length) {
+  const subjects = [
+    { name: 'Mathématiques', icon: '🔢' },
+    { name: 'Physique-Chimie', icon: '⚗️' },
+    { name: 'Dessin & Art', icon: '🎨' },
+    { name: 'Histoire-Géographie', icon: '🌍' },
+    { name: 'Informatique', icon: '💻' },
+  ];
+  subjects.forEach(s => {
+    const id = generateId();
+    db.folders[id] = { id, name: s.name, icon: s.icon, parentId: null, createdAt: new Date().toISOString() };
+  });
+  saveDB();
+}
+
+applyTheme();
+renderSidebar();
+showHome();
+initTimer();
+if (db.settings.timerVisible) document.getElementById('timer-bar').classList.remove('hidden');
+</script>
+</body>
+</html>
