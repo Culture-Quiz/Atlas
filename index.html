@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Atlas — Mon Espace d'Étude</title>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
 
@@ -993,7 +993,7 @@
 // ===========================
 const SUPABASE_URL = 'https://daixjtpbuwedsuokhdxw.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhaXhqdHBidXdlZHN1b2toZHh3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5NDg5NjMsImV4cCI6MjA4OTUyNDk2M30.7_hl-8J3UwPBfJTIWQbN8wM3wfVxLKrx5nGxW1BIlQ4';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let currentUser = null;
 
@@ -1114,7 +1114,7 @@ async function doLogin() {
   clearAuthMessages();
 
   const email = usernameToEmail(username);
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  const { data, error } = await sbClient.auth.signInWithPassword({ email, password });
 
   setBtnLoading('btn-login', false, 'Se connecter');
 
@@ -1141,7 +1141,7 @@ async function doSignup() {
   clearAuthMessages();
 
   const email = usernameToEmail(username);
-  const { data, error } = await supabase.auth.signUp({
+  const { data, error } = await sbClient.auth.signUp({
     email,
     password,
     options: { data: { username } }   // stocké dans user_metadata
@@ -1233,7 +1233,7 @@ function openUserMenu() {
 }
 
 async function signOut() {
-  await supabase.auth.signOut();
+  await sbClient.auth.signOut();
   currentUser = null;
   closeModal();
   document.getElementById('auth-screen').classList.remove('hidden');
@@ -1663,8 +1663,8 @@ function deleteFolderRecursive(id) {
   sheetIds.forEach(sid => delete db.sheets[sid]);
   folderIds.forEach(fid => delete db.folders[fid]);
   if (currentUser) {
-    sheetIds.forEach(sid => supabase.from('atlas_sheets').delete().eq('id', sid).eq('user_id', currentUser.id));
-    folderIds.forEach(fid => supabase.from('atlas_folders').delete().eq('id', fid).eq('user_id', currentUser.id));
+    sheetIds.forEach(sid => sbClient.from('atlas_sheets').delete().eq('id', sid).eq('user_id', currentUser.id));
+    folderIds.forEach(fid => sbClient.from('atlas_folders').delete().eq('id', fid).eq('user_id', currentUser.id));
   }
 }
 
@@ -1673,7 +1673,7 @@ function deleteSheet(id) {
   openModal('Supprimer la feuille', `<p style="color:var(--text2)">Supprimer définitivement cette feuille ?</p>`, [
     { label: 'Annuler', cls: 'btn btn-secondary', action: closeModal },
     { label: 'Supprimer', cls: 'btn btn-danger', action: async () => {
-      if (currentUser) await supabase.from('atlas_sheets').delete().eq('id', id).eq('user_id', currentUser.id);
+      if (currentUser) await sbClient.from('atlas_sheets').delete().eq('id', id).eq('user_id', currentUser.id);
       delete db.sheets[id];
       saveDB(); closeModal();
       if (currentSheetId === id) { if (currentFolderId) openFolder(currentFolderId); else showHome(); }
@@ -2133,9 +2133,9 @@ async function pullFromSupabase() {
   try {
     const uid = currentUser.id;
     const [{ data: folders, error: fe }, { data: sheets, error: se }, { data: settings }] = await Promise.all([
-      supabase.from('atlas_folders').select('*').eq('user_id', uid),
-      supabase.from('atlas_sheets').select('*').eq('user_id', uid),
-      supabase.from('atlas_settings').select('*').eq('user_id', uid).maybeSingle()
+      sbClient.from('atlas_folders').select('*').eq('user_id', uid),
+      sbClient.from('atlas_sheets').select('*').eq('user_id', uid),
+      sbClient.from('atlas_settings').select('*').eq('user_id', uid).maybeSingle()
     ]);
     if (fe || se) throw fe || se;
     if (folders && folders.length) {
@@ -2172,9 +2172,9 @@ async function pushToSupabase() {
       created_at: s.createdAt, updated_at: s.updatedAt || s.createdAt
     }));
     const settingsRow = { user_id: uid, data: JSON.stringify(db.settings) };
-    const ops = [supabase.from('atlas_settings').upsert(settingsRow, { onConflict: 'user_id' })];
-    if (folderRows.length) ops.push(supabase.from('atlas_folders').upsert(folderRows, { onConflict: 'id' }));
-    if (sheetRows.length) ops.push(supabase.from('atlas_sheets').upsert(sheetRows, { onConflict: 'id' }));
+    const ops = [sbClient.from('atlas_settings').upsert(settingsRow, { onConflict: 'user_id' })];
+    if (folderRows.length) ops.push(sbClient.from('atlas_folders').upsert(folderRows, { onConflict: 'id' }));
+    if (sheetRows.length) ops.push(sbClient.from('atlas_sheets').upsert(sheetRows, { onConflict: 'id' }));
     const results = await Promise.all(ops);
     const err = results.find(r => r.error);
     if (err) throw err.error;
@@ -2226,7 +2226,7 @@ loadDB();
 applyTheme();
 
 // Vérifier si une session existe déjà (token stocké)
-supabase.auth.getSession().then(async ({ data: { session } }) => {
+sbClient.auth.getSession().then(async ({ data: { session } }) => {
   if (session?.user) {
     // Session valide → on passe directement à l'app connectée
     await onAuthSuccess(session.user);
@@ -2235,7 +2235,7 @@ supabase.auth.getSession().then(async ({ data: { session } }) => {
 });
 
 // Écouter les changements d'état auth (magic link, refresh token…)
-supabase.auth.onAuthStateChange(async (event, session) => {
+sbClient.auth.onAuthStateChange(async (event, session) => {
   if (event === 'SIGNED_IN' && session?.user && !currentUser) {
     await onAuthSuccess(session.user);
   } else if (event === 'SIGNED_OUT') {
