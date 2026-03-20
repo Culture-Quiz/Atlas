@@ -2320,7 +2320,9 @@ function deleteSheet(id) {
   openModal('Supprimer la feuille', `<p style="color:var(--text2)">Supprimer définitivement cette feuille ?</p>`, [
     { label: 'Annuler', cls: 'btn btn-secondary', action: closeModal },
     { label: 'Supprimer', cls: 'btn btn-danger', action: async () => {
-      if (currentUser) await sbClient.from('atlas_sheets').delete().eq('id', id).eq('user_id', currentUser.id);
+      if (currentUser) {
+        await supabase.from('atlas_sheets').delete().eq('id', id).eq('user_id', currentUser.id);
+      }
       delete db.sheets[id];
       saveDB(); closeModal();
       if (currentSheetId === id) { if (currentFolderId) openFolder(currentFolderId); else showHome(); }
