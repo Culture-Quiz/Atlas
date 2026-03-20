@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Atlas — Mon Espace d'Étude</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
 
@@ -745,22 +745,47 @@
   <div class="auth-card">
     <div class="auth-logo">📚 <span>Atlas</span></div>
     <p class="auth-subtitle">Votre espace d'apprentissage personnel</p>
+
+    <!-- TABS -->
     <div class="auth-tabs">
-      <button class="auth-tab active" id="tab-login">Connexion</button>
-      <button class="auth-tab" id="tab-signup">Créer un compte</button>
+      <button class="auth-tab active" id="tab-login" onclick="showAuthPanel('login')">Connexion</button>
+      <button class="auth-tab" id="tab-signup" onclick="showAuthPanel('signup')">Créer un compte</button>
     </div>
+
+    <!-- MESSAGE ZONE -->
     <div class="auth-error" id="auth-error"></div>
     <div class="auth-success" id="auth-success"></div>
-    <div class="form-group" style="text-align:left">
-      <label class="form-label">Email</label>
-      <input type="email" class="form-input" id="auth-email" placeholder="votre@email.com" autocomplete="email">
+
+    <!-- LOGIN PANEL -->
+    <div id="panel-login">
+      <div class="form-group" style="text-align:left">
+        <label class="form-label">Identifiant</label>
+        <input type="text" class="form-input" id="login-username" placeholder="votre identifiant" autocomplete="username">
+      </div>
+      <div class="form-group" style="text-align:left">
+        <label class="form-label">Mot de passe</label>
+        <input type="password" class="form-input" id="login-password" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <button class="auth-btn" id="btn-login" onclick="doLogin()">Se connecter</button>
     </div>
-    <div class="form-group" style="text-align:left" id="auth-pass-group">
-      <label class="form-label">Mot de passe</label>
-      <input type="password" class="form-input" id="auth-pass" placeholder="••••••••" autocomplete="current-password">
+
+    <!-- SIGNUP PANEL -->
+    <div id="panel-signup" style="display:none">
+      <div class="form-group" style="text-align:left">
+        <label class="form-label">Identifiant <span style="font-size:0.75rem;color:var(--text3)">(lettres, chiffres, sans espace)</span></label>
+        <input type="text" class="form-input" id="signup-username" placeholder="monidentifiant" autocomplete="username">
+      </div>
+      <div class="form-group" style="text-align:left">
+        <label class="form-label">Mot de passe <span style="font-size:0.75rem;color:var(--text3)">(6 caractères min.)</span></label>
+        <input type="password" class="form-input" id="signup-password" placeholder="••••••••" autocomplete="new-password">
+      </div>
+      <div class="form-group" style="text-align:left">
+        <label class="form-label">Confirmer le mot de passe</label>
+        <input type="password" class="form-input" id="signup-password2" placeholder="••••••••" autocomplete="new-password">
+      </div>
+      <button class="auth-btn" id="btn-signup" onclick="doSignup()">Créer mon compte</button>
     </div>
-    <button class="auth-btn" id="auth-submit-btn">Se connecter</button>
-    <p id="forgot-link" style="font-size:0.75rem;color:var(--text3);margin-top:14px;cursor:pointer">Mot de passe oublié ?</p>
+
     <p id="offline-link">Continuer sans compte (mode hors ligne)</p>
   </div>
 </div>
@@ -1037,60 +1062,108 @@ function applyTheme() {
 }
 
 // ===========================
-// AUTH
+// AUTH — système identifiant + mot de passe
+// L'identifiant est converti en email fictif : username@atlas.local
+// Supabase auth fonctionne toujours avec email/password en interne.
 // ===========================
-let authMode = 'login';
 
-function switchAuthTab(mode) {
-  authMode = mode;
-  document.getElementById('tab-login').classList.toggle('active', mode === 'login');
-  document.getElementById('tab-signup').classList.toggle('active', mode === 'signup');
-  document.getElementById('auth-submit-btn').textContent = mode === 'login' ? 'Se connecter' : 'Créer un compte';
+function usernameToEmail(username) {
+  return username.trim().toLowerCase() + '@atlas.local';
+}
+
+function showAuthPanel(panel) {
+  document.getElementById('panel-login').style.display  = panel === 'login'  ? '' : 'none';
+  document.getElementById('panel-signup').style.display = panel === 'signup' ? '' : 'none';
+  document.getElementById('tab-login').classList.toggle('active', panel === 'login');
+  document.getElementById('tab-signup').classList.toggle('active', panel === 'signup');
+  clearAuthMessages();
+}
+
+function clearAuthMessages() {
   document.getElementById('auth-error').classList.remove('visible');
   document.getElementById('auth-success').classList.remove('visible');
 }
 
 function showAuthError(msg) {
   const el = document.getElementById('auth-error');
-  el.textContent = msg; el.classList.add('visible');
+  el.textContent = msg;
+  el.classList.add('visible');
   document.getElementById('auth-success').classList.remove('visible');
 }
 
-function showAuthSuccessMsg(msg) {
+function showAuthSuccess(msg) {
   const el = document.getElementById('auth-success');
-  el.textContent = msg; el.classList.add('visible');
+  el.textContent = msg;
+  el.classList.add('visible');
   document.getElementById('auth-error').classList.remove('visible');
 }
 
-async function submitAuth() {
-  const email = document.getElementById('auth-email').value.trim();
-  const pass = document.getElementById('auth-pass').value;
-  const btn = document.getElementById('auth-submit-btn');
-  if (!email || !pass) { showAuthError('Email et mot de passe requis.'); return; }
-  btn.disabled = true; btn.textContent = '...';
-  let result;
-  if (authMode === 'login') {
-    result = await supabase.auth.signInWithPassword({ email, password: pass });
-  } else {
-    result = await supabase.auth.signUp({ email, password: pass });
-  }
-  btn.disabled = false;
-  btn.textContent = authMode === 'login' ? 'Se connecter' : 'Créer un compte';
-  if (result.error) { showAuthError(result.error.message); return; }
-  if (authMode === 'signup' && !result.data.session) {
-    showAuthSuccessMsg('Compte créé ! Vérifiez votre email pour confirmer.');
-    return;
-  }
-  await onAuthSuccess(result.data.user);
+function setBtnLoading(btnId, loading, defaultText) {
+  const btn = document.getElementById(btnId);
+  btn.disabled = loading;
+  btn.textContent = loading ? '…' : defaultText;
 }
 
-function showForgotPassword() {
-  const email = document.getElementById('auth-email').value.trim();
-  if (!email) { showAuthError('Entrez votre email pour réinitialiser le mot de passe.'); return; }
-  supabase.auth.resetPasswordForEmail(email).then(({ error }) => {
-    if (error) showAuthError(error.message);
-    else showAuthSuccessMsg('Email de réinitialisation envoyé !');
+async function doLogin() {
+  const username = document.getElementById('login-username').value.trim();
+  const password = document.getElementById('login-password').value;
+  if (!username) { showAuthError('Entrez votre identifiant.'); return; }
+  if (!password)  { showAuthError('Entrez votre mot de passe.'); return; }
+
+  setBtnLoading('btn-login', true, 'Se connecter');
+  clearAuthMessages();
+
+  const email = usernameToEmail(username);
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+  setBtnLoading('btn-login', false, 'Se connecter');
+
+  if (error) {
+    showAuthError(error.message === 'Invalid login credentials'
+      ? 'Identifiant ou mot de passe incorrect.'
+      : error.message);
+    return;
+  }
+  await onAuthSuccess(data.user);
+}
+
+async function doSignup() {
+  const username  = document.getElementById('signup-username').value.trim();
+  const password  = document.getElementById('signup-password').value;
+  const password2 = document.getElementById('signup-password2').value;
+
+  if (!username)  { showAuthError('Choisissez un identifiant.'); return; }
+  if (!/^[a-zA-Z0-9_-]+$/.test(username)) { showAuthError('Identifiant : lettres, chiffres, _ et - uniquement.'); return; }
+  if (password.length < 6)  { showAuthError('Le mot de passe doit faire au moins 6 caractères.'); return; }
+  if (password !== password2) { showAuthError('Les mots de passe ne correspondent pas.'); return; }
+
+  setBtnLoading('btn-signup', true, 'Créer mon compte');
+  clearAuthMessages();
+
+  const email = usernameToEmail(username);
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: { data: { username } }   // stocké dans user_metadata
   });
+
+  setBtnLoading('btn-signup', false, 'Créer mon compte');
+
+  if (error) {
+    showAuthError(error.message === 'User already registered'
+      ? 'Cet identifiant est déjà pris.'
+      : error.message);
+    return;
+  }
+
+  // Si Supabase exige une confirmation email → session nulle
+  if (!data.session) {
+    showAuthSuccess('Compte créé ! Connectez-vous maintenant.');
+    showAuthPanel('login');
+    document.getElementById('login-username').value = username;
+    return;
+  }
+  await onAuthSuccess(data.user);
 }
 
 async function onAuthSuccess(user) {
@@ -1105,7 +1178,6 @@ async function onAuthSuccess(user) {
   if (db.settings.timerVisible) document.getElementById('timer-bar').classList.remove('hidden');
 }
 
-// Démarrer en mode hors ligne (sans compte)
 function startOffline() {
   document.getElementById('auth-screen').classList.add('hidden');
   document.getElementById('app').classList.remove('hidden');
@@ -1114,23 +1186,26 @@ function startOffline() {
   applyTheme(); renderSidebar(); showHome(); initTimer();
   if (db.settings.timerVisible) document.getElementById('timer-bar').classList.remove('hidden');
   setSyncStatus('offline', 'Hors ligne');
-  // Afficher bouton de connexion dans le menu utilisateur
   document.getElementById('user-email-short').textContent = 'Hors ligne';
   document.getElementById('user-avatar').textContent = '?';
 }
 
 function updateUserUI(user) {
-  const email = user.email || '';
-  document.getElementById('user-email-short').textContent = email.split('@')[0].slice(0, 12);
-  document.getElementById('user-avatar').textContent = email[0].toUpperCase();
+  const username = user.user_metadata?.username
+    || user.email?.replace('@atlas.local', '')
+    || '?';
+  document.getElementById('user-email-short').textContent = username.slice(0, 14);
+  document.getElementById('user-avatar').textContent = username[0].toUpperCase();
 }
 
 function openUserMenu() {
   if (currentUser) {
+    const username = currentUser.user_metadata?.username
+      || currentUser.email?.replace('@atlas.local', '')
+      || currentUser.email;
     openModal('Mon compte', `
-      <p style="font-size:0.85rem;color:var(--text2);margin-bottom:16px">Connecté en tant que<br><strong>${currentUser.email}</strong></p>
+      <p style="font-size:0.85rem;color:var(--text2);margin-bottom:16px">Connecté en tant que<br><strong>${esc(username)}</strong></p>
       <hr style="border:none;border-top:1px solid var(--border);margin:12px 0">
-      <p style="font-size:0.82rem;color:var(--text3);margin-bottom:16px">Sauvegardez ou transférez votre bibliothèque en local.</p>
       <div style="display:flex;gap:8px">
         <button class="btn btn-secondary btn-sm" onclick="exportJSON();closeModal()" style="flex:1">📤 Exporter JSON</button>
         <button class="btn btn-secondary btn-sm" onclick="closeModal();setTimeout(()=>openImportExport(),100)" style="flex:1">📥 Importer JSON</button>
@@ -1141,14 +1216,18 @@ function openUserMenu() {
     ]);
   } else {
     openModal('Mode hors ligne', `
-      <p style="font-size:0.85rem;color:var(--text2);margin-bottom:16px">Vous utilisez Atlas sans compte. Vos données sont sauvegardées localement.</p>
+      <p style="font-size:0.85rem;color:var(--text2);margin-bottom:16px">Vos données sont sauvegardées localement.</p>
       <div style="display:flex;gap:8px">
         <button class="btn btn-secondary btn-sm" onclick="exportJSON();closeModal()" style="flex:1">📤 Exporter JSON</button>
         <button class="btn btn-secondary btn-sm" onclick="closeModal();setTimeout(()=>openImportExport(),100)" style="flex:1">📥 Importer JSON</button>
       </div>
     `, [
       { label: 'Fermer', cls: 'btn btn-secondary', action: closeModal },
-      { label: '🔑 Se connecter', cls: 'btn btn-primary', action: () => { closeModal(); document.getElementById('app').classList.add('hidden'); document.getElementById('auth-screen').classList.remove('hidden'); } }
+      { label: '🔑 Se connecter', cls: 'btn btn-primary', action: () => {
+        closeModal();
+        document.getElementById('app').classList.add('hidden');
+        document.getElementById('auth-screen').classList.remove('hidden');
+      }}
     ]);
   }
 }
@@ -2167,13 +2246,12 @@ supabase.auth.onAuthStateChange(async (event, session) => {
 // ===========================
 // AUTH EVENT LISTENERS
 // ===========================
-document.getElementById('tab-login').addEventListener('click', () => switchAuthTab('login'));
-document.getElementById('tab-signup').addEventListener('click', () => switchAuthTab('signup'));
-document.getElementById('auth-submit-btn').addEventListener('click', submitAuth);
-document.getElementById('forgot-link').addEventListener('click', showForgotPassword);
 document.getElementById('offline-link').addEventListener('click', startOffline);
-document.getElementById('auth-email').addEventListener('keydown', e => { if (e.key === 'Enter') submitAuth(); });
-document.getElementById('auth-pass').addEventListener('keydown', e => { if (e.key === 'Enter') submitAuth(); });
+document.getElementById('login-username').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+document.getElementById('login-password').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+document.getElementById('signup-username').addEventListener('keydown',  e => { if (e.key === 'Enter') doSignup(); });
+document.getElementById('signup-password').addEventListener('keydown',  e => { if (e.key === 'Enter') doSignup(); });
+document.getElementById('signup-password2').addEventListener('keydown', e => { if (e.key === 'Enter') doSignup(); });
 </script>
 </body>
 </html>
