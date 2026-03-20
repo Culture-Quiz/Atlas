@@ -118,6 +118,12 @@
   }
   .auth-btn:hover { background: var(--accent2); }
   .auth-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  /* Lien "mode hors ligne" sous le formulaire */
+  #offline-link {
+    font-size: 0.75rem; color: var(--text3); margin-top: 14px;
+    cursor: pointer; text-decoration: underline;
+  }
+  #offline-link:hover { color: var(--accent); }
 
   /* ===== SYNC STATUS BAR ===== */
   #sync-status {
@@ -203,9 +209,7 @@
   #topbar-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
 
   /* ===== SEARCH BAR ===== */
-  #search-wrap {
-    position: relative; flex-shrink: 0;
-  }
+  #search-wrap { position: relative; flex-shrink: 0; }
   #search-input {
     background: var(--bg2); border: 1px solid var(--border);
     border-radius: 20px; padding: 6px 14px 6px 32px;
@@ -281,14 +285,8 @@
     transition: all var(--transition);
   }
   .timer-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
-  .timer-progress {
-    flex: 1; height: 4px; background: var(--border);
-    border-radius: 2px; overflow: hidden;
-  }
-  .timer-progress-inner {
-    height: 100%; background: var(--accent);
-    border-radius: 2px; transition: width 1s linear;
-  }
+  .timer-progress { flex: 1; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .timer-progress-inner { height: 100%; background: var(--accent); border-radius: 2px; transition: width 1s linear; }
   #timer-sessions { color: var(--text3); font-size: 0.75rem; }
 
   /* ===== MAIN CONTENT ===== */
@@ -337,9 +335,7 @@
   .view.active { display: block; }
 
   /* ===== HOME VIEW ===== */
-  #home-header {
-    margin-bottom: 28px;
-  }
+  #home-header { margin-bottom: 28px; }
   #home-title {
     font-family: var(--font-display);
     font-size: 2rem; font-weight: 700; color: var(--text);
@@ -369,9 +365,7 @@
     margin-bottom: 12px; margin-top: 24px;
     display: flex; align-items: center; gap: 8px;
   }
-  .section-title::after {
-    content: ''; flex: 1; height: 1px; background: var(--border);
-  }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
   .subjects-grid {
     display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -390,14 +384,8 @@
     color: var(--text); margin-bottom: 4px;
   }
   .subject-card .sc-count { font-size: 0.78rem; color: var(--text3); }
-  .subject-card .sc-progress {
-    margin-top: 10px; height: 3px; background: var(--border);
-    border-radius: 2px; overflow: hidden;
-  }
-  .subject-card .sc-progress-inner {
-    height: 100%; background: var(--accent); border-radius: 2px;
-    transition: width 0.4s ease;
-  }
+  .subject-card .sc-progress { margin-top: 10px; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .subject-card .sc-progress-inner { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.4s ease; }
   .add-subject-card {
     background: transparent;
     border: 2px dashed var(--border2);
@@ -416,7 +404,6 @@
     display: flex; align-items: flex-start; justify-content: space-between;
     margin-bottom: 20px; gap: 12px;
   }
-  #folder-title-area {}
   #folder-title {
     font-family: var(--font-display);
     font-size: 1.6rem; font-weight: 700; color: var(--text);
@@ -450,10 +437,7 @@
   .folder-progress-fill { height: 100%; background: var(--green); border-radius: 3px; transition: width 0.4s ease; }
   .folder-progress-pct { font-size: 0.82rem; font-weight: 600; color: var(--green); white-space: nowrap; }
 
-  .items-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 12px;
-  }
+  .items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
   .folder-item {
     background: var(--surface); border: 1px solid var(--border);
     border-radius: var(--radius2); padding: 16px;
@@ -464,10 +448,7 @@
   .folder-item .fi-icon { font-size: 1.8rem; margin-bottom: 8px; }
   .folder-item .fi-name { font-size: 0.9rem; font-weight: 500; color: var(--text); margin-bottom: 4px; line-height: 1.3; }
   .folder-item .fi-meta { font-size: 0.75rem; color: var(--text3); }
-  .folder-item .fi-actions {
-    position: absolute; top: 10px; right: 10px;
-    display: none; gap: 4px;
-  }
+  .folder-item .fi-actions { position: absolute; top: 10px; right: 10px; display: none; gap: 4px; }
   .folder-item:hover .fi-actions { display: flex; }
   .fi-action-btn {
     width: 26px; height: 26px; border: none; border-radius: 5px;
@@ -486,11 +467,7 @@
   .status-todo { background: var(--bg3); color: var(--text3); }
   .status-progress { background: var(--yellow-light); color: var(--yellow); }
   .status-done { background: var(--green-light); color: var(--green); }
-  .sheet-item .fi-fav {
-    position: absolute; top: 10px; right: 10px;
-    font-size: 0.9rem; cursor: pointer;
-    transition: transform var(--transition);
-  }
+  .sheet-item .fi-fav { position: absolute; top: 10px; right: 10px; font-size: 0.9rem; cursor: pointer; transition: transform var(--transition); }
   .sheet-item .fi-fav:hover { transform: scale(1.2); }
 
   /* ===== SHEET EDITOR ===== */
@@ -509,9 +486,7 @@
   #sheet-meta { font-size: 0.78rem; color: var(--text3); margin-top: 4px; }
   #sheet-actions { display: flex; gap: 6px; flex-shrink: 0; }
 
-  .status-selector {
-    display: flex; gap: 6px; margin-bottom: 16px;
-  }
+  .status-selector { display: flex; gap: 6px; margin-bottom: 16px; }
   .status-option {
     padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 500;
     cursor: pointer; border: 1.5px solid var(--border);
@@ -543,8 +518,7 @@
   .tb-sep { width: 1px; height: 20px; background: var(--border); margin: 0 2px; }
   .tb-color-btn {
     width: 24px; height: 24px; border-radius: 50%; cursor: pointer;
-    border: 2px solid transparent; transition: all var(--transition);
-    flex-shrink: 0;
+    border: 2px solid transparent; transition: all var(--transition); flex-shrink: 0;
   }
   .tb-color-btn:hover, .tb-color-btn.active { border-color: var(--text); transform: scale(1.1); }
   .tb-select {
@@ -552,16 +526,13 @@
     font-family: var(--font-body); font-size: 0.8rem; color: var(--text2);
     background: var(--surface); cursor: pointer; outline: none;
   }
-  .tb-label {
-    font-size: 0.72rem; color: var(--text3); padding: 0 4px; white-space: nowrap;
-  }
+  .tb-label { font-size: 0.72rem; color: var(--text3); padding: 0 4px; white-space: nowrap; }
 
   /* ===== EDITOR ===== */
   #editor-wrap {
     background: var(--surface); border: 1px solid var(--border);
     border-radius: var(--radius2); overflow: hidden;
-    box-shadow: var(--shadow);
-    min-height: 500px;
+    box-shadow: var(--shadow); min-height: 500px;
   }
   #editor {
     min-height: 500px; padding: 24px 28px;
@@ -589,25 +560,17 @@
   /* Editor special blocks */
   .block-cours { color: var(--text) !important; }
   .block-exercice { color: var(--blue) !important; }
-  .block-corrige-container {
-    border: 1px solid var(--red); border-radius: 8px;
-    margin: 8px 0; overflow: hidden;
-  }
+  .block-corrige-container { border: 1px solid var(--red); border-radius: 8px; margin: 8px 0; overflow: hidden; }
   .block-corrige-header {
     background: var(--red-light); padding: 6px 12px;
     display: flex; align-items: center; justify-content: space-between;
-    font-size: 0.8rem; font-weight: 500; color: var(--red);
-    cursor: pointer;
+    font-size: 0.8rem; font-weight: 500; color: var(--red); cursor: pointer;
   }
-  .block-corrige-content {
-    padding: 12px; color: var(--red);
-    font-size: 0.9rem;
-  }
+  .block-corrige-content { padding: 12px; color: var(--red); font-size: 0.9rem; }
   .block-corrige-content.hidden { display: none; }
   .highlight-box {
     background: var(--yellow-light); border: 1px solid var(--yellow);
-    border-radius: 8px; padding: 10px 14px; margin: 8px 0;
-    font-size: 0.9rem;
+    border-radius: 8px; padding: 10px 14px; margin: 8px 0; font-size: 0.9rem;
   }
 
   /* ===== FAVORITES VIEW ===== */
@@ -623,12 +586,10 @@
   .fav-card .fc-path { font-size: 0.75rem; color: var(--text3); }
 
   /* ===== REVISION VIEW ===== */
-  #revision-view {}
   .revision-filters {
     display: flex; flex-wrap: wrap; gap: 8px;
     margin-bottom: 20px; background: var(--surface);
-    border: 1px solid var(--border); border-radius: var(--radius);
-    padding: 12px;
+    border: 1px solid var(--border); border-radius: var(--radius); padding: 12px;
   }
   .filter-group { display: flex; align-items: center; gap: 6px; font-size: 0.82rem; }
   .filter-label { color: var(--text3); }
@@ -649,10 +610,7 @@
   .revision-card-title { font-weight: 600; color: var(--text); }
   .revision-card-path { font-size: 0.75rem; color: var(--text3); margin-top: 2px; }
   .revision-card-content { padding: 18px; font-size: 0.9rem; line-height: 1.7; color: var(--text2); }
-  .revision-empty {
-    text-align: center; padding: 40px; color: var(--text3);
-    font-size: 0.9rem;
-  }
+  .revision-empty { text-align: center; padding: 40px; color: var(--text3); font-size: 0.9rem; }
 
   /* ===== MODAL ===== */
   .modal-overlay {
@@ -695,10 +653,7 @@
     transition: border-color var(--transition), background var(--transition);
   }
   .form-input:focus { border-color: var(--accent); background: var(--surface); }
-  .emoji-grid {
-    display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px;
-    margin-top: 6px;
-  }
+  .emoji-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; margin-top: 6px; }
   .emoji-option {
     width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
     font-size: 1.2rem; border-radius: 7px; cursor: pointer;
@@ -735,16 +690,7 @@
   .toast.warning { background: var(--yellow); color: var(--text); }
   .toast.error { background: var(--red); color: white; }
 
-  /* ===== POMODORO RING ===== */
-  #timer-ring-btn { cursor: pointer; }
-  #timer-ring-btn svg circle.progress {
-    transition: stroke-dashoffset 1s linear;
-    transform-origin: center;
-    transform: rotate(-90deg);
-  }
-
   /* ===== REVIEW SUMMARY ===== */
-  .review-list { }
   .review-item {
     display: flex; align-items: center; gap: 10px;
     padding: 10px 14px; border-radius: 8px;
@@ -752,9 +698,7 @@
     border: 1px solid transparent;
   }
   .review-item:hover { background: var(--bg2); border-color: var(--border); }
-  .review-item .ri-dot {
-    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
-  }
+  .review-item .ri-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
   .review-item .ri-title { font-size: 0.88rem; color: var(--text); flex: 1; }
   .review-item .ri-path { font-size: 0.73rem; color: var(--text3); }
 
@@ -765,9 +709,7 @@
   ::-webkit-scrollbar-thumb:hover { background: var(--text3); }
 
   /* ===== EMPTY STATES ===== */
-  .empty-state {
-    text-align: center; padding: 48px 24px; color: var(--text3);
-  }
+  .empty-state { text-align: center; padding: 48px 24px; color: var(--text3); }
   .empty-state .es-icon { font-size: 3rem; margin-bottom: 12px; }
   .empty-state .es-title { font-size: 1rem; font-weight: 500; color: var(--text2); margin-bottom: 6px; }
   .empty-state .es-desc { font-size: 0.85rem; }
@@ -779,15 +721,13 @@
     .subjects-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
   }
 
-  /* ===== PRINT / a11y ===== */
   .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
 
   /* ===== IMPORT/EXPORT AREA ===== */
   #file-drop {
     border: 2px dashed var(--border2); border-radius: var(--radius);
     padding: 24px; text-align: center; color: var(--text3);
-    cursor: pointer; transition: all var(--transition);
-    font-size: 0.85rem;
+    cursor: pointer; transition: all var(--transition); font-size: 0.85rem;
   }
   #file-drop:hover, #file-drop.over { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
 
@@ -799,6 +739,7 @@
 </style>
 </head>
 <body>
+
 <!-- AUTH SCREEN -->
 <div id="auth-screen">
   <div class="auth-card">
@@ -820,11 +761,11 @@
     </div>
     <button class="auth-btn" id="auth-submit-btn">Se connecter</button>
     <p id="forgot-link" style="font-size:0.75rem;color:var(--text3);margin-top:14px;cursor:pointer">Mot de passe oublié ?</p>
+    <p id="offline-link">Continuer sans compte (mode hors ligne)</p>
   </div>
 </div>
 
-
-
+<!-- APP -->
 <div id="app" class="hidden">
 
   <!-- TOP BAR -->
@@ -867,14 +808,10 @@
 
   <!-- MAIN -->
   <div id="main">
-
-    <!-- SIDEBAR -->
     <aside id="sidebar">
       <div id="sidebar-header">Navigation</div>
-      <div id="sidebar-inner" id="sidebar-nav"></div>
+      <div id="sidebar-inner"></div>
     </aside>
-
-    <!-- CONTENT -->
     <main id="content">
 
       <!-- HOME VIEW -->
@@ -922,16 +859,12 @@
           </div>
         </div>
         <div class="status-selector" id="status-selector"></div>
-
-        <!-- TOOLBAR -->
         <div id="toolbar">
-          <!-- Text style -->
           <button class="tb-btn" onclick="exec('bold')" title="Gras"><b>B</b></button>
           <button class="tb-btn" onclick="exec('italic')" title="Italique"><i>I</i></button>
           <button class="tb-btn" onclick="exec('underline')" title="Souligner"><u>U</u></button>
           <button class="tb-btn" onclick="exec('strikeThrough')" title="Barré"><s>S</s></button>
           <div class="tb-sep"></div>
-          <!-- Headings -->
           <select class="tb-select" onchange="applyHeading(this.value); this.value=''" title="Titre">
             <option value="">Titre…</option>
             <option value="h1">Titre 1</option>
@@ -940,38 +873,32 @@
             <option value="p">Normal</option>
           </select>
           <div class="tb-sep"></div>
-          <!-- Lists -->
           <button class="tb-btn" onclick="exec('insertUnorderedList')" title="Liste à puces">☰</button>
           <button class="tb-btn" onclick="exec('insertOrderedList')" title="Liste numérotée">①</button>
           <div class="tb-sep"></div>
-          <!-- Align -->
           <button class="tb-btn" onclick="exec('justifyLeft')" title="Gauche">⬅</button>
           <button class="tb-btn" onclick="exec('justifyCenter')" title="Centrer">↔</button>
           <button class="tb-btn" onclick="exec('justifyRight')" title="Droite">➡</button>
           <div class="tb-sep"></div>
-          <!-- Colors -->
           <span class="tb-label">Couleur:</span>
-          <div class="tb-color-btn" style="background:#1a1714" title="Cours (noir)" onclick="applyColor('#1a1714')" id="col-black"></div>
-          <div class="tb-color-btn" style="background:#3a6fbc" title="Exercice (bleu)" onclick="applyColor('#3a6fbc')" id="col-blue"></div>
-          <div class="tb-color-btn" style="background:#bc3a3a" title="Corrigé (rouge)" onclick="applyColor('#bc3a3a')" id="col-red"></div>
-          <div class="tb-color-btn" style="background:#3a8c5c" title="Note (vert)" onclick="applyColor('#3a8c5c')" id="col-green"></div>
-          <div class="tb-color-btn" style="background:#c49a2a" title="Important (jaune)" onclick="applyColor('#c49a2a')" id="col-yellow"></div>
+          <div class="tb-color-btn" style="background:#1a1714" title="Cours (noir)" onclick="applyColor('#1a1714')"></div>
+          <div class="tb-color-btn" style="background:#3a6fbc" title="Exercice (bleu)" onclick="applyColor('#3a6fbc')"></div>
+          <div class="tb-color-btn" style="background:#bc3a3a" title="Corrigé (rouge)" onclick="applyColor('#bc3a3a')"></div>
+          <div class="tb-color-btn" style="background:#3a8c5c" title="Note (vert)" onclick="applyColor('#3a8c5c')"></div>
+          <div class="tb-color-btn" style="background:#c49a2a" title="Important (jaune)" onclick="applyColor('#c49a2a')"></div>
           <div class="tb-sep"></div>
-          <!-- Special blocks -->
-          <button class="tb-btn" onclick="insertBlock('corrige')" title="Bloc corrigé (masquable)" style="font-size:0.7rem;">🔴 Corrigé</button>
-          <button class="tb-btn" onclick="insertBlock('highlight')" title="Bloc mis en évidence" style="font-size:0.7rem;">📌 Encadré</button>
+          <button class="tb-btn" onclick="insertBlock('corrige')" title="Bloc corrigé" style="font-size:0.7rem;">🔴 Corrigé</button>
+          <button class="tb-btn" onclick="insertBlock('highlight')" title="Encadré" style="font-size:0.7rem;">📌 Encadré</button>
           <button class="tb-btn" onclick="insertBlock('quote')" title="Citation" style="font-size:0.7rem;">❝ Citation</button>
           <div class="tb-sep"></div>
-          <!-- Media -->
           <button class="tb-btn" onclick="insertImageURL()" title="Image via URL" style="font-size:0.7rem;">🖼 URL</button>
           <button class="tb-btn" onclick="triggerImageUpload()" title="Image locale" style="font-size:0.7rem;">📤 Image</button>
-          <button class="tb-btn" onclick="insertLink()" title="Lien / vidéo" style="font-size:0.7rem;">🔗 Lien</button>
+          <button class="tb-btn" onclick="insertLink()" title="Lien" style="font-size:0.7rem;">🔗 Lien</button>
           <input type="file" id="img-upload" accept="image/*" style="display:none" onchange="handleImageUpload(this)">
           <div class="tb-sep"></div>
           <button class="tb-btn" onclick="exec('undo')" title="Annuler">↩</button>
           <button class="tb-btn" onclick="exec('redo')" title="Refaire">↪</button>
         </div>
-
         <div id="editor-wrap">
           <div id="editor" contenteditable="true" spellcheck="true"></div>
         </div>
@@ -1020,7 +947,7 @@
   </div>
 </div>
 
-<!-- MODALS -->
+<!-- MODAL -->
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal" id="modal">
     <div class="modal-header">
@@ -1037,13 +964,22 @@
 
 <script>
 // ===========================
+// SUPABASE CONFIG
+// ===========================
+const SUPABASE_URL = 'https://daixjtpbuwedsuokhdxw.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhaXhqdHBidXdlZHN1b2toZHh3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5NDg5NjMsImV4cCI6MjA4OTUyNDk2M30.7_hl-8J3UwPBfJTIWQbN8wM3wfVxLKrx5nGxW1BIlQ4';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let currentUser = null;
+
+// ===========================
 // DATA LAYER
 // ===========================
 const STORAGE_KEY = 'atlas_numerique_v1';
 
 let db = {
-  folders: {},      // id -> { id, name, icon, parentId, createdAt }
-  sheets: {},       // id -> { id, name, folderId, content, status, favorite, createdAt, updatedAt }
+  folders: {},
+  sheets: {},
   settings: {
     darkMode: false,
     timerWork: 25,
@@ -1057,8 +993,8 @@ let db = {
 let currentView = 'home';
 let currentFolderId = null;
 let currentSheetId = null;
-let navigationStack = []; // [{type:'folder',id}]
 let saveTimer = null;
+let pushDebounceTimer = null;
 
 function loadDB() {
   try {
@@ -1073,11 +1009,13 @@ function loadDB() {
   } catch(e) { console.warn('Load error', e); }
 }
 
+// Unique saveDB — persists locally and syncs to Supabase if logged in
 function saveDB() {
   clearTimeout(saveTimer);
   saveTimer = setTimeout(() => {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); } catch(e) { showToast('Erreur de sauvegarde', 'error'); }
   }, 300);
+  if (currentUser) schedulePush();
 }
 
 function generateId() {
@@ -1099,10 +1037,135 @@ function applyTheme() {
 }
 
 // ===========================
+// AUTH
+// ===========================
+let authMode = 'login';
+
+function switchAuthTab(mode) {
+  authMode = mode;
+  document.getElementById('tab-login').classList.toggle('active', mode === 'login');
+  document.getElementById('tab-signup').classList.toggle('active', mode === 'signup');
+  document.getElementById('auth-submit-btn').textContent = mode === 'login' ? 'Se connecter' : 'Créer un compte';
+  document.getElementById('auth-error').classList.remove('visible');
+  document.getElementById('auth-success').classList.remove('visible');
+}
+
+function showAuthError(msg) {
+  const el = document.getElementById('auth-error');
+  el.textContent = msg; el.classList.add('visible');
+  document.getElementById('auth-success').classList.remove('visible');
+}
+
+function showAuthSuccessMsg(msg) {
+  const el = document.getElementById('auth-success');
+  el.textContent = msg; el.classList.add('visible');
+  document.getElementById('auth-error').classList.remove('visible');
+}
+
+async function submitAuth() {
+  const email = document.getElementById('auth-email').value.trim();
+  const pass = document.getElementById('auth-pass').value;
+  const btn = document.getElementById('auth-submit-btn');
+  if (!email || !pass) { showAuthError('Email et mot de passe requis.'); return; }
+  btn.disabled = true; btn.textContent = '...';
+  let result;
+  if (authMode === 'login') {
+    result = await supabase.auth.signInWithPassword({ email, password: pass });
+  } else {
+    result = await supabase.auth.signUp({ email, password: pass });
+  }
+  btn.disabled = false;
+  btn.textContent = authMode === 'login' ? 'Se connecter' : 'Créer un compte';
+  if (result.error) { showAuthError(result.error.message); return; }
+  if (authMode === 'signup' && !result.data.session) {
+    showAuthSuccessMsg('Compte créé ! Vérifiez votre email pour confirmer.');
+    return;
+  }
+  await onAuthSuccess(result.data.user);
+}
+
+function showForgotPassword() {
+  const email = document.getElementById('auth-email').value.trim();
+  if (!email) { showAuthError('Entrez votre email pour réinitialiser le mot de passe.'); return; }
+  supabase.auth.resetPasswordForEmail(email).then(({ error }) => {
+    if (error) showAuthError(error.message);
+    else showAuthSuccessMsg('Email de réinitialisation envoyé !');
+  });
+}
+
+async function onAuthSuccess(user) {
+  currentUser = user;
+  document.getElementById('auth-screen').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  updateUserUI(user);
+  setSyncStatus('syncing', 'Chargement…');
+  await pullFromSupabase();
+  setSyncStatus('ok', 'Synchronisé');
+  applyTheme(); renderSidebar(); showHome(); initTimer();
+  if (db.settings.timerVisible) document.getElementById('timer-bar').classList.remove('hidden');
+}
+
+// Démarrer en mode hors ligne (sans compte)
+function startOffline() {
+  document.getElementById('auth-screen').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  loadDB();
+  seedWelcomeFolders();
+  applyTheme(); renderSidebar(); showHome(); initTimer();
+  if (db.settings.timerVisible) document.getElementById('timer-bar').classList.remove('hidden');
+  setSyncStatus('offline', 'Hors ligne');
+  // Afficher bouton de connexion dans le menu utilisateur
+  document.getElementById('user-email-short').textContent = 'Hors ligne';
+  document.getElementById('user-avatar').textContent = '?';
+}
+
+function updateUserUI(user) {
+  const email = user.email || '';
+  document.getElementById('user-email-short').textContent = email.split('@')[0].slice(0, 12);
+  document.getElementById('user-avatar').textContent = email[0].toUpperCase();
+}
+
+function openUserMenu() {
+  if (currentUser) {
+    openModal('Mon compte', `
+      <p style="font-size:0.85rem;color:var(--text2);margin-bottom:16px">Connecté en tant que<br><strong>${currentUser.email}</strong></p>
+      <hr style="border:none;border-top:1px solid var(--border);margin:12px 0">
+      <p style="font-size:0.82rem;color:var(--text3);margin-bottom:16px">Sauvegardez ou transférez votre bibliothèque en local.</p>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-secondary btn-sm" onclick="exportJSON();closeModal()" style="flex:1">📤 Exporter JSON</button>
+        <button class="btn btn-secondary btn-sm" onclick="closeModal();setTimeout(()=>openImportExport(),100)" style="flex:1">📥 Importer JSON</button>
+      </div>
+    `, [
+      { label: 'Fermer', cls: 'btn btn-secondary', action: closeModal },
+      { label: '🚪 Se déconnecter', cls: 'btn btn-danger', action: signOut }
+    ]);
+  } else {
+    openModal('Mode hors ligne', `
+      <p style="font-size:0.85rem;color:var(--text2);margin-bottom:16px">Vous utilisez Atlas sans compte. Vos données sont sauvegardées localement.</p>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-secondary btn-sm" onclick="exportJSON();closeModal()" style="flex:1">📤 Exporter JSON</button>
+        <button class="btn btn-secondary btn-sm" onclick="closeModal();setTimeout(()=>openImportExport(),100)" style="flex:1">📥 Importer JSON</button>
+      </div>
+    `, [
+      { label: 'Fermer', cls: 'btn btn-secondary', action: closeModal },
+      { label: '🔑 Se connecter', cls: 'btn btn-primary', action: () => { closeModal(); document.getElementById('app').classList.add('hidden'); document.getElementById('auth-screen').classList.remove('hidden'); } }
+    ]);
+  }
+}
+
+async function signOut() {
+  await supabase.auth.signOut();
+  currentUser = null;
+  closeModal();
+  document.getElementById('auth-screen').classList.remove('hidden');
+  document.getElementById('app').classList.add('hidden');
+  showToast('Déconnecté');
+}
+
+// ===========================
 // NAVIGATION / BREADCRUMB
 // ===========================
 function buildBreadcrumb(path) {
-  // path: [{label, action}]
   const bc = document.getElementById('breadcrumb');
   bc.innerHTML = '';
   const home = document.createElement('span');
@@ -1112,8 +1175,7 @@ function buildBreadcrumb(path) {
   bc.appendChild(home);
   path.forEach((item, i) => {
     const sep = document.createElement('span');
-    sep.className = 'bc-sep';
-    sep.textContent = '›';
+    sep.className = 'bc-sep'; sep.textContent = '›';
     bc.appendChild(sep);
     const el = document.createElement('span');
     el.className = i === path.length - 1 ? 'bc-item bc-current' : 'bc-item';
@@ -1128,13 +1190,9 @@ function buildBreadcrumb(path) {
 // ===========================
 function showHome() {
   setActiveView('home-view');
-  currentFolderId = null;
-  currentSheetId = null;
+  currentFolderId = null; currentSheetId = null;
   buildBreadcrumb([]);
-  renderStats();
-  renderSubjectsGrid();
-  renderReviewSection();
-  renderSidebar();
+  renderStats(); renderSubjectsGrid(); renderReviewSection(); renderSidebar();
 }
 
 function renderStats() {
@@ -1163,7 +1221,7 @@ function renderSubjectsGrid() {
       <div class="sc-name">${esc(f.name)}</div>
       <div class="sc-count">${stats.done}/${stats.total} feuilles maîtrisées</div>
       <div class="sc-progress"><div class="sc-progress-inner" style="width:${pct}%"></div></div>
-      </div>`;
+    </div>`;
   }).join('');
   html += `<div class="add-subject-card" onclick="createRootFolder()">
     <div class="asc-icon">➕</div>
@@ -1196,25 +1254,19 @@ function renderReviewSection() {
 function openFolder(id) {
   const folder = db.folders[id];
   if (!folder) return;
-  currentFolderId = id;
-  currentSheetId = null;
+  currentFolderId = id; currentSheetId = null;
   setActiveView('folder-view');
-
-  // Build breadcrumb
   const ancestors = getAncestors(id);
   const bcPath = ancestors.map(a => ({ label: (a.icon || '📁') + ' ' + a.name, action: () => openFolder(a.id) }));
   bcPath.push({ label: (folder.icon || '📁') + ' ' + folder.name });
   buildBreadcrumb(bcPath);
-
   document.getElementById('folder-title').textContent = (folder.icon || '📁') + ' ' + folder.name;
-
   const stats = getFolderStats(id);
   const pct = stats.total ? Math.round(stats.done / stats.total * 100) : 0;
   document.getElementById('folder-meta').textContent = `${stats.total} feuille(s) · Créé le ${formatDate(folder.createdAt)}`;
   document.getElementById('folder-progress-label').textContent = `${stats.done}/${stats.total} feuilles maîtrisées`;
   document.getElementById('folder-progress-fill').style.width = pct + '%';
   document.getElementById('folder-progress-pct').textContent = pct + '%';
-
   renderFolderItems(id);
   renderSidebar();
 }
@@ -1223,7 +1275,6 @@ function renderFolderItems(folderId) {
   const subFolders = Object.values(db.folders).filter(f => f.parentId === folderId);
   const sheets = Object.values(db.sheets).filter(s => s.folderId === folderId);
   const grid = document.getElementById('items-grid');
-
   if (!subFolders.length && !sheets.length) {
     grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
       <div class="es-icon">📭</div>
@@ -1232,7 +1283,6 @@ function renderFolderItems(folderId) {
     </div>`;
     return;
   }
-
   let html = '';
   subFolders.forEach(f => {
     const stats = getFolderStats(f.id);
@@ -1248,7 +1298,6 @@ function renderFolderItems(folderId) {
       </div>
     </div>`;
   });
-
   sheets.forEach(s => {
     const statusClass = { todo: 'status-todo', progress: 'status-progress', done: 'status-done' }[s.status || 'todo'];
     const statusLabel = { todo: '📌 À faire', progress: '⏳ En cours', done: '✅ Maîtrisée' }[s.status || 'todo'];
@@ -1265,7 +1314,6 @@ function renderFolderItems(folderId) {
       </div>
     </div>`;
   });
-
   grid.innerHTML = html;
 }
 
@@ -1277,23 +1325,18 @@ function openSheet(id) {
   if (!sheet) return;
   currentSheetId = id;
   setActiveView('sheet-view');
-
   const folder = db.folders[sheet.folderId];
   const ancestors = sheet.folderId ? getAncestors(sheet.folderId) : [];
   if (folder) ancestors.push(folder);
   const bcPath = ancestors.map(a => ({ label: (a.icon || '📁') + ' ' + a.name, action: () => openFolder(a.id) }));
   bcPath.push({ label: '📄 ' + sheet.name });
   buildBreadcrumb(bcPath);
-
   document.getElementById('sheet-title-input').value = sheet.name;
   document.getElementById('sheet-meta').textContent = `Mise à jour : ${formatDate(sheet.updatedAt || sheet.createdAt)}`;
   document.getElementById('editor').innerHTML = sheet.content || '';
   renderStatusSelector(sheet.status || 'todo');
   updateFavBtn(sheet.favorite);
-
-  // Editor autosave
-  const editor = document.getElementById('editor');
-  editor.oninput = () => autoSaveSheet();
+  document.getElementById('editor').oninput = () => autoSaveSheet();
   document.getElementById('sheet-title-input').oninput = () => autoSaveSheet();
   renderSidebar();
 }
@@ -1314,17 +1357,16 @@ function renderStatusSelector(current) {
     { value: 'progress', label: '⏳ En cours', cls: 'selected-progress' },
     { value: 'done', label: '✅ Maîtrisée', cls: 'selected-done' }
   ];
-  const sel = document.getElementById('status-selector');
-  sel.innerHTML = opts.map(o => `<div class="status-option${current === o.value ? ' ' + o.cls : ''}"
-    onclick="setSheetStatus('${o.value}')">${o.label}</div>`).join('');
+  document.getElementById('status-selector').innerHTML = opts.map(o =>
+    `<div class="status-option${current === o.value ? ' ' + o.cls : ''}" onclick="setSheetStatus('${o.value}')">${o.label}</div>`
+  ).join('');
 }
 
 function setSheetStatus(status) {
   if (!currentSheetId) return;
   db.sheets[currentSheetId].status = status;
   db.sheets[currentSheetId].updatedAt = new Date().toISOString();
-  saveDB();
-  renderStatusSelector(status);
+  saveDB(); renderStatusSelector(status);
   showToast('Statut mis à jour', 'success');
 }
 
@@ -1385,9 +1427,7 @@ function insertBlock(type) {
       <div class="block-corrige-header" onclick="toggleCorrige('${id}')">
         <span>🔴 Corrigé</span><span id="btn_${id}">👁 Afficher</span>
       </div>
-      <div class="block-corrige-content hidden" id="${id}" contenteditable="true">
-        Écrivez votre corrigé ici...
-      </div>
+      <div class="block-corrige-content hidden" id="${id}" contenteditable="true">Écrivez votre corrigé ici...</div>
     </div><p></p>`;
   } else if (type === 'highlight') {
     html = `<div class="highlight-box" contenteditable="true">📌 Encadré important...</div><p></p>`;
@@ -1410,9 +1450,7 @@ function insertImageURL() {
   if (url) exec('insertHTML', `<img src="${url}" alt="Image">`);
 }
 
-function triggerImageUpload() {
-  document.getElementById('img-upload').click();
-}
+function triggerImageUpload() { document.getElementById('img-upload').click(); }
 
 function handleImageUpload(input) {
   const file = input.files[0];
@@ -1427,7 +1465,7 @@ function handleImageUpload(input) {
 }
 
 function insertLink() {
-  const url = prompt('URL du lien ou de la vidéo :');
+  const url = prompt('URL du lien :');
   if (!url) return;
   const text = prompt('Texte du lien :', url);
   exec('insertHTML', `<a href="${url}" target="_blank">${text || url}</a>`);
@@ -1445,9 +1483,7 @@ function createFolderIn(parentId) {
     <div class="form-group"><label class="form-label">Nom du dossier</label>
     <input type="text" class="form-input" id="new-folder-name" placeholder="Ex: Mathématiques" autofocus></div>
     <div class="form-group"><label class="form-label">Icône</label>
-    <div class="emoji-grid" id="emoji-grid">
-    ${emojis.map(e => `<div class="emoji-option" onclick="selectEmoji('${e}',this)">${e}</div>`).join('')}
-    </div></div>
+    <div class="emoji-grid">${emojis.map(e => `<div class="emoji-option" onclick="selectEmoji('${e}',this)">${e}</div>`).join('')}</div></div>
   `, [
     { label: 'Annuler', cls: 'btn btn-secondary', action: closeModal },
     { label: 'Créer', cls: 'btn btn-primary', action: () => {
@@ -1457,10 +1493,9 @@ function createFolderIn(parentId) {
       if (!name) return showToast('Entrez un nom', 'error');
       const id = generateId();
       db.folders[id] = { id, name, icon, parentId, createdAt: new Date().toISOString() };
-      saveDB();
-      closeModal();
+      saveDB(); closeModal();
       if (!parentId) { renderSubjectsGrid(); renderSidebar(); }
-      else { renderFolderItems(currentFolderId); }
+      else renderFolderItems(currentFolderId);
       showToast('📁 Dossier créé', 'success');
     }}
   ]);
@@ -1469,8 +1504,7 @@ function createFolderIn(parentId) {
 let selectedEmoji = '';
 function selectEmoji(e, el) {
   document.querySelectorAll('.emoji-option').forEach(x => x.classList.remove('selected'));
-  el.classList.add('selected');
-  selectedEmoji = e;
+  el.classList.add('selected'); selectedEmoji = e;
 }
 
 function createSheet() {
@@ -1486,9 +1520,7 @@ function createSheet() {
       const id = generateId();
       const now = new Date().toISOString();
       db.sheets[id] = { id, name, folderId: currentFolderId, content: '', status: 'todo', favorite: false, createdAt: now, updatedAt: now };
-      saveDB();
-      closeModal();
-      openSheet(id);
+      saveDB(); closeModal(); openSheet(id);
       showToast('📄 Feuille créée', 'success');
     }}
   ]);
@@ -1505,8 +1537,7 @@ function renameFolder(id) {
       const v = document.getElementById('rename-val').value.trim();
       if (!v) return;
       f.name = v; saveDB(); closeModal();
-      if (currentFolderId) renderFolderItems(currentFolderId);
-      else renderSubjectsGrid();
+      if (currentFolderId) renderFolderItems(currentFolderId); else renderSubjectsGrid();
       renderSidebar();
     }}
   ]);
@@ -1536,22 +1567,34 @@ function deleteFolder(id) {
       saveDB(); closeModal();
       if (currentFolderId === id) { const p = db.folders[id]?.parentId; p ? openFolder(p) : showHome(); }
       else renderFolderItems(currentFolderId);
-      renderSidebar();
-      showToast('Dossier supprimé');
+      renderSidebar(); showToast('Dossier supprimé');
     }}
   ]);
 }
 
+// Unique deleteFolderRecursive — supprime localement ET sur Supabase si connecté
 function deleteFolderRecursive(id) {
-  Object.values(db.sheets).filter(s => s.folderId === id).forEach(s => delete db.sheets[s.id]);
-  Object.values(db.folders).filter(f => f.parentId === id).forEach(f => deleteFolderRecursive(f.id));
-  delete db.folders[id];
+  const folderIds = [], sheetIds = [];
+  const collect = (fid) => {
+    folderIds.push(fid);
+    Object.values(db.sheets).filter(s => s.folderId === fid).forEach(s => sheetIds.push(s.id));
+    Object.values(db.folders).filter(f => f.parentId === fid).forEach(f => collect(f.id));
+  };
+  collect(id);
+  sheetIds.forEach(sid => delete db.sheets[sid]);
+  folderIds.forEach(fid => delete db.folders[fid]);
+  if (currentUser) {
+    sheetIds.forEach(sid => supabase.from('atlas_sheets').delete().eq('id', sid).eq('user_id', currentUser.id));
+    folderIds.forEach(fid => supabase.from('atlas_folders').delete().eq('id', fid).eq('user_id', currentUser.id));
+  }
 }
 
+// Unique deleteSheet — supprime localement ET sur Supabase si connecté
 function deleteSheet(id) {
   openModal('Supprimer la feuille', `<p style="color:var(--text2)">Supprimer définitivement cette feuille ?</p>`, [
     { label: 'Annuler', cls: 'btn btn-secondary', action: closeModal },
-    { label: 'Supprimer', cls: 'btn btn-danger', action: () => {
+    { label: 'Supprimer', cls: 'btn btn-danger', action: async () => {
+      if (currentUser) await supabase.from('atlas_sheets').delete().eq('id', id).eq('user_id', currentUser.id);
       delete db.sheets[id];
       saveDB(); closeModal();
       if (currentSheetId === id) { if (currentFolderId) openFolder(currentFolderId); else showHome(); }
@@ -1586,7 +1629,6 @@ function showFavorites() {
 function showRevision() {
   setActiveView('revision-view');
   buildBreadcrumb([{ label: '🎯 Révision' }]);
-  // Populate subject filter
   const sel = document.getElementById('rev-filter-subject');
   const roots = Object.values(db.folders).filter(f => !f.parentId);
   sel.innerHTML = '<option value="">Toutes les matières</option>' + roots.map(f => `<option value="${f.id}">${f.name}</option>`).join('');
@@ -1597,33 +1639,27 @@ function loadRevision() {
   const subjectFilter = document.getElementById('rev-filter-subject').value;
   const statusFilter = document.getElementById('rev-filter-status').value;
   const countFilter = document.getElementById('rev-count').value;
-
   let sheets = Object.values(db.sheets);
   if (statusFilter) sheets = sheets.filter(s => s.status === statusFilter);
   if (subjectFilter) {
     const ids = getAllFolderIds(subjectFilter);
     sheets = sheets.filter(s => ids.has(s.folderId));
   }
-
-  // Shuffle
   sheets = sheets.sort(() => Math.random() - 0.5);
   if (countFilter !== 'all') sheets = sheets.slice(0, parseInt(countFilter));
-
   const container = document.getElementById('revision-cards');
   if (!sheets.length) {
-    container.innerHTML = `<div class="revision-empty">Aucune feuille trouvée avec ces filtres.<br>Créez des feuilles et ajoutez du contenu !</div>`;
+    container.innerHTML = `<div class="revision-empty">Aucune feuille trouvée avec ces filtres.</div>`;
     return;
   }
-
   container.innerHTML = sheets.map(s => {
     const preview = stripHTML(s.content).slice(0, 200);
-    const path = getSheetPath(s.id);
     const statusLabel = { todo: '📌 À faire', progress: '⏳ En cours', done: '✅ Maîtrisée' }[s.status || 'todo'];
     return `<div class="revision-card">
       <div class="revision-card-header">
         <div>
           <div class="revision-card-title">${esc(s.name)}</div>
-          <div class="revision-card-path">${esc(path)}</div>
+          <div class="revision-card-path">${esc(getSheetPath(s.id))}</div>
         </div>
         <div style="display:flex;gap:6px;align-items:center">
           <span style="font-size:0.78rem;color:var(--text3)">${statusLabel}</span>
@@ -1654,8 +1690,7 @@ document.getElementById('search-input').addEventListener('input', function() {
   });
   if (!matches.length) {
     res.innerHTML = '<div id="search-empty">Aucun résultat trouvé.</div>';
-    res.classList.add('visible');
-    return;
+    res.classList.add('visible'); return;
   }
   res.innerHTML = matches.slice(0, 10).map(m =>
     `<div class="search-result-item" onclick="openSheet('${m.sheet.id}');closeSearch()">
@@ -1710,15 +1745,12 @@ function renderSidebar() {
 // ===========================
 // TIMER (POMODORO)
 // ===========================
-let timerInterval = null;
-let timerRunning = false;
-let timerSeconds = 0;
-let timerTotalSeconds = 0;
-let timerPhase = 'work'; // work | break | longBreak
-let timerSessionCount = 0;
+let timerInterval = null, timerRunning = false;
+let timerSeconds = 0, timerTotalSeconds = 0;
+let timerPhase = 'work', timerSessionCount = 0;
 
 function initTimer() {
-  timerTotalSeconds = db.settings.timerWork * 60;
+  timerTotalSeconds = (db.settings.timerWork || 25) * 60;
   timerSeconds = timerTotalSeconds;
   updateTimerDisplay();
 }
@@ -1734,12 +1766,10 @@ function toggleTimer() {
 function timerStartPause() {
   const btn = document.getElementById('timer-play-btn');
   if (timerRunning) {
-    clearInterval(timerInterval);
-    timerRunning = false;
+    clearInterval(timerInterval); timerRunning = false;
     btn.textContent = '▶ Reprendre';
   } else {
-    timerRunning = true;
-    btn.textContent = '⏸ Pause';
+    timerRunning = true; btn.textContent = '⏸ Pause';
     timerInterval = setInterval(timerTick, 1000);
   }
 }
@@ -1747,11 +1777,7 @@ function timerStartPause() {
 function timerTick() {
   timerSeconds--;
   updateTimerDisplay();
-  if (timerSeconds <= 0) {
-    clearInterval(timerInterval);
-    timerRunning = false;
-    timerPhaseComplete();
-  }
+  if (timerSeconds <= 0) { clearInterval(timerInterval); timerRunning = false; timerPhaseComplete(); }
 }
 
 function timerPhaseComplete() {
@@ -1779,21 +1805,15 @@ function timerPhaseComplete() {
 }
 
 function timerReset() {
-  clearInterval(timerInterval);
-  timerRunning = false;
-  timerPhase = 'work';
-  timerSessionCount = 0;
+  clearInterval(timerInterval); timerRunning = false;
+  timerPhase = 'work'; timerSessionCount = 0;
   timerTotalSeconds = (db.settings.timerWork || 25) * 60;
   timerSeconds = timerTotalSeconds;
   updateTimerDisplay();
   document.getElementById('timer-play-btn').textContent = '▶ Démarrer';
 }
 
-function timerSkip() {
-  clearInterval(timerInterval);
-  timerRunning = false;
-  timerPhaseComplete();
-}
+function timerSkip() { clearInterval(timerInterval); timerRunning = false; timerPhaseComplete(); }
 
 function updateTimerDisplay() {
   const m = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
@@ -1821,22 +1841,14 @@ function playTimerSound() {
 
 function openTimerSettings() {
   openModal('Paramètres du timer', `
-    <div class="timer-setting">
-      <label>Durée de concentration (min)</label>
-      <input type="number" class="timer-number-input" id="ts-work" value="${db.settings.timerWork || 25}" min="1" max="120">
-    </div>
-    <div class="timer-setting">
-      <label>Durée de pause courte (min)</label>
-      <input type="number" class="timer-number-input" id="ts-break" value="${db.settings.timerBreak || 5}" min="1" max="30">
-    </div>
-    <div class="timer-setting">
-      <label>Durée de pause longue (min)</label>
-      <input type="number" class="timer-number-input" id="ts-long" value="${db.settings.timerLongBreak || 15}" min="1" max="60">
-    </div>
-    <div class="timer-setting">
-      <label>Sessions avant pause longue</label>
-      <input type="number" class="timer-number-input" id="ts-sessions" value="${db.settings.timerSessions || 4}" min="1" max="10">
-    </div>
+    <div class="timer-setting"><label>Durée de concentration (min)</label>
+    <input type="number" class="timer-number-input" id="ts-work" value="${db.settings.timerWork || 25}" min="1" max="120"></div>
+    <div class="timer-setting"><label>Durée de pause courte (min)</label>
+    <input type="number" class="timer-number-input" id="ts-break" value="${db.settings.timerBreak || 5}" min="1" max="30"></div>
+    <div class="timer-setting"><label>Durée de pause longue (min)</label>
+    <input type="number" class="timer-number-input" id="ts-long" value="${db.settings.timerLongBreak || 15}" min="1" max="60"></div>
+    <div class="timer-setting"><label>Sessions avant pause longue</label>
+    <input type="number" class="timer-number-input" id="ts-sessions" value="${db.settings.timerSessions || 4}" min="1" max="10"></div>
   `, [
     { label: 'Annuler', cls: 'btn btn-secondary', action: closeModal },
     { label: 'Enregistrer', cls: 'btn btn-primary', action: () => {
@@ -1868,8 +1880,6 @@ function openImportExport() {
     </div>
     <p style="font-size:0.75rem;color:var(--red);margin-top:8px">⚠️ L'import remplacera toutes vos données actuelles.</p>
   `, [{ label: 'Fermer', cls: 'btn btn-secondary', action: closeModal }]);
-
-  // Drag & drop
   setTimeout(() => {
     const drop = document.getElementById('file-drop');
     if (!drop) return;
@@ -1888,16 +1898,12 @@ function exportJSON() {
   const blob = new Blob([data], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url; a.download = 'cahier_numerique_' + new Date().toISOString().slice(0,10) + '.json';
+  a.href = url; a.download = 'atlas_' + new Date().toISOString().slice(0,10) + '.json';
   a.click(); URL.revokeObjectURL(url);
   showToast('📤 Export réussi', 'success');
 }
 
-function importJSON(input) {
-  const file = input.files[0];
-  if (file) readJSONFile(file);
-  input.value = '';
-}
+function importJSON(input) { const file = input.files[0]; if (file) readJSONFile(file); input.value = ''; }
 
 function readJSONFile(file) {
   const reader = new FileReader();
@@ -1908,9 +1914,7 @@ function readJSONFile(file) {
       db = { ...db, ...data };
       saveDB(); closeModal(); showHome();
       showToast('📥 Import réussi', 'success');
-    } catch(err) {
-      showToast('Fichier invalide', 'error');
-    }
+    } catch(err) { showToast('Fichier invalide', 'error'); }
   };
   reader.readAsText(file);
 }
@@ -1930,24 +1934,16 @@ function openModal(title, bodyHTML, buttons) {
     document.getElementById('modal-footer').appendChild(btn);
   });
   document.getElementById('modal-overlay').classList.add('open');
-  // Focus first input
   setTimeout(() => {
     const inp = document.querySelector('#modal-body input[autofocus], #modal-body input');
     if (inp) inp.focus();
   }, 100);
 }
 
-function closeModal() {
-  document.getElementById('modal-overlay').classList.remove('open');
-}
+function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
 
-document.getElementById('modal-overlay').addEventListener('click', function(e) {
-  if (e.target === this) closeModal();
-});
-
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeModal();
-});
+document.getElementById('modal-overlay').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
 // ===========================
 // TOAST
@@ -1955,14 +1951,10 @@ document.addEventListener('keydown', e => {
 function showToast(msg, type = '') {
   const container = document.getElementById('toast-container');
   const toast = document.createElement('div');
-  toast.className = `toast ${type}`;
-  toast.textContent = msg;
+  toast.className = `toast ${type}`; toast.textContent = msg;
   container.appendChild(toast);
   setTimeout(() => toast.classList.add('show'), 10);
-  setTimeout(() => {
-    toast.classList.remove('show');
-    setTimeout(() => container.removeChild(toast), 300);
-  }, 2800);
+  setTimeout(() => { toast.classList.remove('show'); setTimeout(() => container.removeChild(toast), 300); }, 2800);
 }
 
 // ===========================
@@ -1978,9 +1970,7 @@ function setActiveView(id) {
 function getFolderStats(folderId) {
   let total = 0, done = 0;
   const collectStats = (id) => {
-    Object.values(db.sheets).filter(s => s.folderId === id).forEach(s => {
-      total++; if (s.status === 'done') done++;
-    });
+    Object.values(db.sheets).filter(s => s.folderId === id).forEach(s => { total++; if (s.status === 'done') done++; });
     Object.values(db.folders).filter(f => f.parentId === id).forEach(f => collectStats(f.id));
   };
   collectStats(folderId);
@@ -2021,10 +2011,7 @@ function isAncestorOf(folderId) {
   const targetId = currentFolderId || (currentSheetId ? db.sheets[currentSheetId]?.folderId : null);
   if (!targetId) return false;
   let id = targetId;
-  while (id) {
-    if (id === folderId) return true;
-    id = db.folders[id]?.parentId;
-  }
+  while (id) { if (id === folderId) return true; id = db.folders[id]?.parentId; }
   return false;
 }
 
@@ -2033,182 +2020,28 @@ function esc(str) {
 }
 
 function stripHTML(html) {
-  const tmp = document.createElement('div');
-  tmp.innerHTML = html || '';
+  const tmp = document.createElement('div'); tmp.innerHTML = html || '';
   return tmp.textContent || tmp.innerText || '';
 }
 
 function formatDate(iso) {
   if (!iso) return '';
-  try {
-    return new Date(iso).toLocaleDateString('fr-FR', { day:'2-digit', month:'2-digit', year:'numeric' });
-  } catch(e) { return iso; }
+  try { return new Date(iso).toLocaleDateString('fr-FR', { day:'2-digit', month:'2-digit', year:'numeric' }); }
+  catch(e) { return iso; }
 }
 
 // ===========================
-// WELCOME DATA (first launch)
-// ===========================
-// SUPABASE CONFIG
-// ===========================
-const SUPABASE_URL = 'https://daixjtpbuwedsuokhdxw.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhaXhqdHBidXdlZHN1b2toZHh3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5NDg5NjMsImV4cCI6MjA4OTUyNDk2M30.7_hl-8J3UwPBfJTIWQbN8wM3wfVxLKrx5nGxW1BIlQ4';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-let currentUser = null;
-let syncPending = false;
-let syncQueue = new Set(); // ids of items pending push
-
-// ===========================
-// AUTH
-// ===========================
-let authMode = 'login';
-
-function switchAuthTab(mode) {
-  authMode = mode;
-  document.getElementById('tab-login').classList.toggle('active', mode === 'login');
-  document.getElementById('tab-signup').classList.toggle('active', mode === 'signup');
-  document.getElementById('auth-submit-btn').textContent = mode === 'login' ? 'Se connecter' : 'Créer un compte';
-  document.getElementById('auth-error').classList.remove('visible');
-  document.getElementById('auth-success').classList.remove('visible');
-}
-
-function showForgotPassword() {
-  const email = document.getElementById('auth-email').value.trim();
-  if (!email) { showAuthError('Entrez votre email pour réinitialiser le mot de passe.'); return; }
-  supabase.auth.resetPasswordForEmail(email).then(({ error }) => {
-    if (error) showAuthError(error.message);
-    else showAuthSuccessMsg('Email de réinitialisation envoyé !');
-  });
-}
-
-function showAuthError(msg) {
-  const el = document.getElementById('auth-error');
-  el.textContent = msg; el.classList.add('visible');
-  document.getElementById('auth-success').classList.remove('visible');
-}
-
-function showAuthSuccessMsg(msg) {
-  const el = document.getElementById('auth-success');
-  el.textContent = msg; el.classList.add('visible');
-  document.getElementById('auth-error').classList.remove('visible');
-}
-
-async function submitAuth() {
-  const email = document.getElementById('auth-email').value.trim();
-  const pass = document.getElementById('auth-pass').value;
-  const btn = document.getElementById('auth-submit-btn');
-  if (!email || !pass) { showAuthError('Email et mot de passe requis.'); return; }
-  btn.disabled = true; btn.textContent = '...';
-  let result;
-  if (authMode === 'login') {
-    result = await supabase.auth.signInWithPassword({ email, password: pass });
-  } else {
-    result = await supabase.auth.signUp({ email, password: pass });
-  }
-  btn.disabled = false;
-  btn.textContent = authMode === 'login' ? 'Se connecter' : 'Créer un compte';
-  if (result.error) { showAuthError(result.error.message); return; }
-  if (authMode === 'signup' && !result.data.session) {
-    showAuthSuccessMsg('Compte créé ! Vérifiez votre email pour confirmer.');
-    return;
-  }
-  await onAuthSuccess(result.data.user);
-}
-
-async function onAuthSuccess(user) {
-  currentUser = user;
-  document.getElementById('auth-screen').classList.add('hidden');
-  document.getElementById('app').classList.remove('hidden');
-  updateUserUI(user);
-  setSyncStatus('syncing', 'Chargement…');
-  await pullFromSupabase();
-  setSyncStatus('ok', 'Synchronisé');
-  applyTheme(); renderSidebar(); showHome(); initTimer();
-  if (db.settings.timerVisible) document.getElementById('timer-bar').classList.remove('hidden');
-}
-
-function updateUserUI(user) {
-  const email = user.email || '';
-  document.getElementById('user-email-short').textContent = email.split('@')[0].slice(0, 12);
-  document.getElementById('user-avatar').textContent = email[0].toUpperCase();
-}
-
-function openUserMenu() {
-  openModal('Mon compte', `
-    <p style="font-size:0.85rem;color:var(--text2);margin-bottom:16px">Connecté en tant que<br><strong>${currentUser?.email}</strong></p>
-    <hr style="border:none;border-top:1px solid var(--border);margin:12px 0">
-    <p style="font-size:0.82rem;color:var(--text3);margin-bottom:16px">Sauvegardez ou transférez votre bibliothèque en local.</p>
-    <div style="display:flex;gap:8px">
-      <button class="btn btn-secondary btn-sm" onclick="exportJSON();closeModal()" style="flex:1">📤 Exporter JSON</button>
-      <button class="btn btn-secondary btn-sm" onclick="closeModal();setTimeout(()=>openImportExport(),100)" style="flex:1">📥 Importer JSON</button>
-    </div>
-  `, [
-    { label: 'Fermer', cls: 'btn btn-secondary', action: closeModal },
-    { label: '🚪 Se déconnecter', cls: 'btn btn-danger', action: signOut }
-  ]);
-}
-
-async function signOut() {
-  await supabase.auth.signOut();
-  currentUser = null;
-  closeModal();
-  document.getElementById('auth-screen').classList.remove('hidden');
-  showToast('Déconnecté');
-}
-
-// ===========================
-// SYNC STATUS UI
+// SUPABASE SYNC
 // ===========================
 function setSyncStatus(state, label) {
   const dot = document.getElementById('sync-dot');
   const lbl = document.getElementById('sync-label');
   dot.className = '';
-  if (state === 'syncing') { dot.classList.add('syncing'); }
-  else if (state === 'error') { dot.classList.add('error'); }
-  else if (state === 'offline') { dot.classList.add('offline'); }
+  if (state === 'syncing') dot.classList.add('syncing');
+  else if (state === 'error') dot.classList.add('error');
+  else if (state === 'offline') dot.classList.add('offline');
   lbl.textContent = label || '';
 }
-
-// ===========================
-// SUPABASE PULL (Supabase → local)
-// ===========================
-async function pullFromSupabase() {
-  if (!currentUser) return;
-  try {
-    const uid = currentUser.id;
-    const [{ data: folders, error: fe }, { data: sheets, error: se }, { data: settings, error: ste }] = await Promise.all([
-      supabase.from('atlas_folders').select('*').eq('user_id', uid),
-      supabase.from('atlas_sheets').select('*').eq('user_id', uid),
-      supabase.from('atlas_settings').select('*').eq('user_id', uid).maybeSingle()
-    ]);
-    if (fe || se) throw fe || se;
-
-    // Rebuild db.folders
-    if (folders && folders.length) {
-      db.folders = {};
-      folders.forEach(f => { db.folders[f.id] = { id: f.id, name: f.name, icon: f.icon, parentId: f.parent_id, createdAt: f.created_at }; });
-    }
-    // Rebuild db.sheets
-    if (sheets && sheets.length) {
-      db.sheets = {};
-      sheets.forEach(s => { db.sheets[s.id] = { id: s.id, name: s.name, folderId: s.folder_id, content: s.content, status: s.status, favorite: s.favorite, createdAt: s.created_at, updatedAt: s.updated_at }; });
-    }
-    // Settings
-    if (settings) {
-      try { const parsed = JSON.parse(settings.data); db.settings = { ...db.settings, ...parsed }; } catch(e) {}
-    }
-    saveDB(); // update localStorage cache
-  } catch(e) {
-    console.error('Pull error', e);
-    setSyncStatus('error', 'Erreur sync');
-    showToast('Erreur de synchronisation', 'error');
-  }
-}
-
-// ===========================
-// SUPABASE PUSH (local → Supabase)
-// ===========================
-let pushDebounceTimer = null;
 
 function schedulePush() {
   clearTimeout(pushDebounceTimer);
@@ -2216,35 +2049,56 @@ function schedulePush() {
   setSyncStatus('syncing', 'Sauvegarde…');
 }
 
+async function pullFromSupabase() {
+  if (!currentUser) return;
+  try {
+    const uid = currentUser.id;
+    const [{ data: folders, error: fe }, { data: sheets, error: se }, { data: settings }] = await Promise.all([
+      supabase.from('atlas_folders').select('*').eq('user_id', uid),
+      supabase.from('atlas_sheets').select('*').eq('user_id', uid),
+      supabase.from('atlas_settings').select('*').eq('user_id', uid).maybeSingle()
+    ]);
+    if (fe || se) throw fe || se;
+    if (folders && folders.length) {
+      db.folders = {};
+      folders.forEach(f => { db.folders[f.id] = { id: f.id, name: f.name, icon: f.icon, parentId: f.parent_id, createdAt: f.created_at }; });
+    }
+    if (sheets && sheets.length) {
+      db.sheets = {};
+      sheets.forEach(s => { db.sheets[s.id] = { id: s.id, name: s.name, folderId: s.folder_id, content: s.content, status: s.status, favorite: s.favorite, createdAt: s.created_at, updatedAt: s.updated_at }; });
+    }
+    if (settings) {
+      try { const parsed = JSON.parse(settings.data); db.settings = { ...db.settings, ...parsed }; } catch(e) {}
+    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
+  } catch(e) {
+    console.error('Pull error', e);
+    setSyncStatus('error', 'Erreur sync');
+    showToast('Erreur de synchronisation', 'error');
+  }
+}
+
 async function pushToSupabase() {
   if (!currentUser) return;
   const uid = currentUser.id;
   try {
-    // Upsert all folders
     const folderRows = Object.values(db.folders).map(f => ({
       id: f.id, user_id: uid, name: f.name, icon: f.icon || '📁',
       parent_id: f.parentId || null, created_at: f.createdAt
     }));
-    // Upsert all sheets
     const sheetRows = Object.values(db.sheets).map(s => ({
       id: s.id, user_id: uid, name: s.name, folder_id: s.folderId,
       content: s.content || '', status: s.status || 'todo',
       favorite: s.favorite || false,
       created_at: s.createdAt, updated_at: s.updatedAt || s.createdAt
     }));
-    // Upsert settings
     const settingsRow = { user_id: uid, data: JSON.stringify(db.settings) };
-
-    const ops = [
-      supabase.from('atlas_settings').upsert(settingsRow, { onConflict: 'user_id' })
-    ];
+    const ops = [supabase.from('atlas_settings').upsert(settingsRow, { onConflict: 'user_id' })];
     if (folderRows.length) ops.push(supabase.from('atlas_folders').upsert(folderRows, { onConflict: 'id' }));
     if (sheetRows.length) ops.push(supabase.from('atlas_sheets').upsert(sheetRows, { onConflict: 'id' }));
-
     const results = await Promise.all(ops);
     const err = results.find(r => r.error);
     if (err) throw err.error;
-
     setSyncStatus('ok', 'Synchronisé');
     document.getElementById('sync-label').title = 'Dernière sync : ' + new Date().toLocaleTimeString('fr-FR');
   } catch(e) {
@@ -2254,87 +2108,21 @@ async function pushToSupabase() {
   }
 }
 
-// Push deletions individually
-async function pushDeleteFolder(id) {
-  if (!currentUser) return;
-  await supabase.from('atlas_folders').delete().eq('id', id).eq('user_id', currentUser.id);
-}
-async function pushDeleteSheet(id) {
-  if (!currentUser) return;
-  await supabase.from('atlas_sheets').delete().eq('id', id).eq('user_id', currentUser.id);
-}
-
 async function forcSync() {
-  if (!currentUser) return;
+  if (!currentUser) { showToast('Connectez-vous pour synchroniser', 'warning'); return; }
   setSyncStatus('syncing', 'Synchronisation…');
   await pushToSupabase();
   await pullFromSupabase();
   setSyncStatus('ok', 'Synchronisé');
   showToast('🔄 Synchronisation complète', 'success');
-  // Refresh current view
   if (currentView === 'home-view') showHome();
   else if (currentView === 'folder-view' && currentFolderId) openFolder(currentFolderId);
   else if (currentView === 'sheet-view' && currentSheetId) openSheet(currentSheetId);
 }
 
 // ===========================
-// PATCH saveDB to trigger push
+// WELCOME DATA (first launch)
 // ===========================
-const _origSaveDB = saveDB;
-function saveDB() {
-  clearTimeout(saveTimer);
-  saveTimer = setTimeout(() => {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); } catch(e) { showToast('Erreur de sauvegarde', 'error'); }
-  }, 300);
-  if (currentUser) schedulePush();
-}
-
-// ===========================
-// PATCH deletions to also delete on Supabase
-// ===========================
-const _origDeleteFolderRecursive = deleteFolderRecursive;
-function deleteFolderRecursive(id) {
-  // collect ids before deleting
-  const folderIds = [];
-  const sheetIds = [];
-  const collect = (fid) => {
-    folderIds.push(fid);
-    Object.values(db.sheets).filter(s => s.folderId === fid).forEach(s => sheetIds.push(s.id));
-    Object.values(db.folders).filter(f => f.parentId === fid).forEach(f => collect(f.id));
-  };
-  collect(id);
-  // delete locally
-  sheetIds.forEach(sid => delete db.sheets[sid]);
-  folderIds.forEach(fid => delete db.folders[fid]);
-  // delete remotely
-  if (currentUser) {
-    sheetIds.forEach(sid => supabase.from('atlas_sheets').delete().eq('id', sid).eq('user_id', currentUser.id));
-    folderIds.forEach(fid => supabase.from('atlas_folders').delete().eq('id', fid).eq('user_id', currentUser.id));
-  }
-}
-
-// Patch sheet deletion
-const _origDeleteSheet = deleteSheet;
-function deleteSheet(id) {
-  openModal('Supprimer la feuille', `<p style="color:var(--text2)">Supprimer définitivement cette feuille ?</p>`, [
-    { label: 'Annuler', cls: 'btn btn-secondary', action: closeModal },
-    { label: 'Supprimer', cls: 'btn btn-danger', action: async () => {
-      if (currentUser) await pushDeleteSheet(id);
-      delete db.sheets[id];
-      saveDB(); closeModal();
-      if (currentSheetId === id) { if (currentFolderId) openFolder(currentFolderId); else showHome(); }
-      else if (currentFolderId) renderFolderItems(currentFolderId);
-      showToast('Feuille supprimée');
-    }}
-  ]);
-}
-
-// ===========================
-// INIT — run after ALL declarations
-// ===========================
-loadDB();
-
-// Seed welcome folders on first launch
 function seedWelcomeFolders() {
   if (Object.keys(db.folders).length) return;
   const subjects = [
@@ -2348,29 +2136,26 @@ function seedWelcomeFolders() {
     const id = generateId();
     db.folders[id] = { id, name: s.name, icon: s.icon, parentId: null, createdAt: new Date().toISOString() };
   });
-  saveDB();
+  // Pas de saveDB() ici pour ne pas déclencher un push Supabase inutile avant la connexion
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); } catch(e) {}
 }
 
+// ===========================
+// INIT
+// ===========================
+loadDB();
 applyTheme();
 
-// Check existing session
+// Vérifier si une session existe déjà (token stocké)
 supabase.auth.getSession().then(async ({ data: { session } }) => {
   if (session?.user) {
+    // Session valide → on passe directement à l'app connectée
     await onAuthSuccess(session.user);
-  } else {
-    // No session — show app in offline mode
-    document.getElementById('app').classList.remove('hidden');
-    loadDB();
-    seedWelcomeFolders();
-    renderSidebar();
-    showHome();
-    initTimer();
-    if (db.settings.timerVisible) document.getElementById('timer-bar').classList.remove('hidden');
-    setSyncStatus('offline', 'Non connecté');
   }
+  // Sinon : on reste sur l'écran de connexion (ne rien faire)
 });
 
-// Listen for auth state changes (e.g. magic link, token refresh)
+// Écouter les changements d'état auth (magic link, refresh token…)
 supabase.auth.onAuthStateChange(async (event, session) => {
   if (event === 'SIGNED_IN' && session?.user && !currentUser) {
     await onAuthSuccess(session.user);
@@ -2381,17 +2166,14 @@ supabase.auth.onAuthStateChange(async (event, session) => {
 
 // ===========================
 // AUTH EVENT LISTENERS
-// (bound here, after all functions are defined)
 // ===========================
 document.getElementById('tab-login').addEventListener('click', () => switchAuthTab('login'));
 document.getElementById('tab-signup').addEventListener('click', () => switchAuthTab('signup'));
 document.getElementById('auth-submit-btn').addEventListener('click', submitAuth);
 document.getElementById('forgot-link').addEventListener('click', showForgotPassword);
-
-// Allow pressing Enter in auth fields to submit
+document.getElementById('offline-link').addEventListener('click', startOffline);
 document.getElementById('auth-email').addEventListener('keydown', e => { if (e.key === 'Enter') submitAuth(); });
 document.getElementById('auth-pass').addEventListener('keydown', e => { if (e.key === 'Enter') submitAuth(); });
 </script>
-</div><!-- /#app -->
 </body>
 </html>
