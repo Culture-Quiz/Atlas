@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Atlas — Mon Espace d'Étude</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
 
@@ -810,21 +810,40 @@
     <div class="auth-logo">📚 <span>Atlas</span></div>
     <p class="auth-subtitle">Votre espace d'apprentissage personnel</p>
     <div class="auth-tabs">
-      <button class="auth-tab active" id="tab-login">Connexion</button>
-      <button class="auth-tab" id="tab-signup">Créer un compte</button>
+      <button class="auth-tab active" id="tab-login" onclick="showAuthPanel('login')">Connexion</button>
+      <button class="auth-tab" id="tab-signup" onclick="showAuthPanel('signup')">Créer un compte</button>
     </div>
     <div class="auth-error" id="auth-error"></div>
     <div class="auth-success" id="auth-success"></div>
-    <div class="form-group" style="text-align:left">
-      <label class="form-label">Email</label>
-      <input type="email" class="form-input" id="auth-email" placeholder="votre@email.com" autocomplete="email">
+    <!-- LOGIN -->
+    <div id="panel-login">
+      <div class="form-group" style="text-align:left">
+        <label class="form-label">Identifiant</label>
+        <input type="text" class="form-input" id="login-username" placeholder="votre identifiant" autocomplete="username">
+      </div>
+      <div class="form-group" style="text-align:left">
+        <label class="form-label">Mot de passe</label>
+        <input type="password" class="form-input" id="login-password" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <button class="auth-btn" id="btn-login" onclick="doLogin()">Se connecter</button>
     </div>
-    <div class="form-group" style="text-align:left" id="auth-pass-group">
-      <label class="form-label">Mot de passe</label>
-      <input type="password" class="form-input" id="auth-pass" placeholder="••••••••" autocomplete="current-password">
+    <!-- SIGNUP -->
+    <div id="panel-signup" style="display:none">
+      <div class="form-group" style="text-align:left">
+        <label class="form-label">Identifiant <span style="font-size:0.75rem;color:var(--text3)">(lettres, chiffres, _ et -)</span></label>
+        <input type="text" class="form-input" id="signup-username" placeholder="monidentifiant" autocomplete="username">
+      </div>
+      <div class="form-group" style="text-align:left">
+        <label class="form-label">Mot de passe <span style="font-size:0.75rem;color:var(--text3)">(6 caractères min.)</span></label>
+        <input type="password" class="form-input" id="signup-password" placeholder="••••••••" autocomplete="new-password">
+      </div>
+      <div class="form-group" style="text-align:left">
+        <label class="form-label">Confirmer le mot de passe</label>
+        <input type="password" class="form-input" id="signup-password2" placeholder="••••••••" autocomplete="new-password">
+      </div>
+      <button class="auth-btn" id="btn-signup" onclick="doSignup()">Créer mon compte</button>
     </div>
-    <button class="auth-btn" id="auth-submit-btn">Se connecter</button>
-    <p id="forgot-link" style="font-size:0.75rem;color:var(--text3);margin-top:14px;cursor:pointer">Mot de passe oublié ?</p>
+    <p id="offline-link" style="font-size:0.75rem;color:var(--text3);margin-top:14px;cursor:pointer;text-decoration:underline">Continuer sans compte (mode hors ligne)</p>
   </div>
 </div>
 
@@ -1078,12 +1097,6 @@ function loadDB() {
   } catch(e) { console.warn('Load error', e); }
 }
 
-function saveDB() {
-  clearTimeout(saveTimer);
-  saveTimer = setTimeout(() => {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); } catch(e) { showToast('Erreur de sauvegarde', 'error'); }
-  }, 300);
-}
 
 function generateId() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
@@ -1549,36 +1562,15 @@ function deleteFolder(id) {
         const p = db.folders[id]?.parentId;
         p ? openFolder(p) : showHome();
       } else if (currentView === 'home-view') {
-        renderSubjectsGrid();
-        renderStats();
-        renderSidebar();
+        renderSubjectsGrid(); renderStats(); renderSidebar();
       } else {
-        renderFolderItems(currentFolderId);
-        renderSidebar();
+        renderFolderItems(currentFolderId); renderSidebar();
       }
       showToast('Supprimé');
     }}
   ]);
 }
 
-function deleteFolderRecursive(id) {
-  Object.values(db.sheets).filter(s => s.folderId === id).forEach(s => delete db.sheets[s.id]);
-  Object.values(db.folders).filter(f => f.parentId === id).forEach(f => deleteFolderRecursive(f.id));
-  delete db.folders[id];
-}
-
-function deleteSheet(id) {
-  openModal('Supprimer la feuille', `<p style="color:var(--text2)">Supprimer définitivement cette feuille ?</p>`, [
-    { label: 'Annuler', cls: 'btn btn-secondary', action: closeModal },
-    { label: 'Supprimer', cls: 'btn btn-danger', action: () => {
-      delete db.sheets[id];
-      saveDB(); closeModal();
-      if (currentSheetId === id) { if (currentFolderId) openFolder(currentFolderId); else showHome(); }
-      else if (currentFolderId) renderFolderItems(currentFolderId);
-      showToast('Feuille supprimée');
-    }}
-  ]);
-}
 
 // ===========================
 // FAVORITES
@@ -2065,39 +2057,31 @@ function formatDate(iso) {
 }
 
 // ===========================
-// WELCOME DATA (first launch)
-// ===========================
 // SUPABASE CONFIG
 // ===========================
 const SUPABASE_URL = 'https://daixjtpbuwedsuokhdxw.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_vlNU7aXBzO7i14PJtpOyDw_rQg_enYp';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhaXhqdHBidXdlZHN1b2toZHh3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5NDg5NjMsImV4cCI6MjA4OTUyNDk2M30.7_hl-8J3UwPBfJTIWQbN8wM3wfVxLKrx5nGxW1BIlQ4';
+const sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let currentUser = null;
-let syncPending = false;
-let syncQueue = new Set(); // ids of items pending push
+let pushDebounceTimer = null;
 
 // ===========================
-// AUTH
+// AUTH — identifiant → email fictif @atlas-app.com
 // ===========================
-let authMode = 'login';
+function usernameToEmail(u) { return u.trim().toLowerCase() + '@atlas-app.com'; }
 
-function switchAuthTab(mode) {
-  authMode = mode;
-  document.getElementById('tab-login').classList.toggle('active', mode === 'login');
-  document.getElementById('tab-signup').classList.toggle('active', mode === 'signup');
-  document.getElementById('auth-submit-btn').textContent = mode === 'login' ? 'Se connecter' : 'Créer un compte';
-  document.getElementById('auth-error').classList.remove('visible');
-  document.getElementById('auth-success').classList.remove('visible');
+function showAuthPanel(panel) {
+  document.getElementById('panel-login').style.display  = panel === 'login'  ? '' : 'none';
+  document.getElementById('panel-signup').style.display = panel === 'signup' ? '' : 'none';
+  document.getElementById('tab-login').classList.toggle('active', panel === 'login');
+  document.getElementById('tab-signup').classList.toggle('active', panel === 'signup');
+  clearAuthMessages();
 }
 
-function showForgotPassword() {
-  const email = document.getElementById('auth-email').value.trim();
-  if (!email) { showAuthError('Entrez votre email pour réinitialiser le mot de passe.'); return; }
-  supabase.auth.resetPasswordForEmail(email).then(({ error }) => {
-    if (error) showAuthError(error.message);
-    else showAuthSuccessMsg('Email de réinitialisation envoyé !');
-  });
+function clearAuthMessages() {
+  document.getElementById('auth-error').classList.remove('visible');
+  document.getElementById('auth-success').classList.remove('visible');
 }
 
 function showAuthError(msg) {
@@ -2106,32 +2090,50 @@ function showAuthError(msg) {
   document.getElementById('auth-success').classList.remove('visible');
 }
 
-function showAuthSuccessMsg(msg) {
+function showAuthSuccess(msg) {
   const el = document.getElementById('auth-success');
   el.textContent = msg; el.classList.add('visible');
   document.getElementById('auth-error').classList.remove('visible');
 }
 
-async function submitAuth() {
-  const email = document.getElementById('auth-email').value.trim();
-  const pass = document.getElementById('auth-pass').value;
-  const btn = document.getElementById('auth-submit-btn');
-  if (!email || !pass) { showAuthError('Email et mot de passe requis.'); return; }
-  btn.disabled = true; btn.textContent = '...';
-  let result;
-  if (authMode === 'login') {
-    result = await supabase.auth.signInWithPassword({ email, password: pass });
-  } else {
-    result = await supabase.auth.signUp({ email, password: pass });
-  }
-  btn.disabled = false;
-  btn.textContent = authMode === 'login' ? 'Se connecter' : 'Créer un compte';
-  if (result.error) { showAuthError(result.error.message); return; }
-  if (authMode === 'signup' && !result.data.session) {
-    showAuthSuccessMsg('Compte créé ! Vérifiez votre email pour confirmer.');
+function setBtnLoading(id, loading, text) {
+  const btn = document.getElementById(id);
+  btn.disabled = loading; btn.textContent = loading ? '…' : text;
+}
+
+async function doLogin() {
+  const username = document.getElementById('login-username').value.trim();
+  const password = document.getElementById('login-password').value;
+  if (!username) { showAuthError('Entrez votre identifiant.'); return; }
+  if (!password)  { showAuthError('Entrez votre mot de passe.'); return; }
+  setBtnLoading('btn-login', true, 'Se connecter');
+  clearAuthMessages();
+  const { data, error } = await sbClient.auth.signInWithPassword({ email: usernameToEmail(username), password });
+  setBtnLoading('btn-login', false, 'Se connecter');
+  if (error) { showAuthError(error.message === 'Invalid login credentials' ? 'Identifiant ou mot de passe incorrect.' : error.message); return; }
+  await onAuthSuccess(data.user);
+}
+
+async function doSignup() {
+  const username  = document.getElementById('signup-username').value.trim();
+  const password  = document.getElementById('signup-password').value;
+  const password2 = document.getElementById('signup-password2').value;
+  if (!username)  { showAuthError('Choisissez un identifiant.'); return; }
+  if (!/^[a-zA-Z0-9_-]+$/.test(username)) { showAuthError('Identifiant : lettres, chiffres, _ et - uniquement.'); return; }
+  if (password.length < 6)  { showAuthError('Le mot de passe doit faire au moins 6 caractères.'); return; }
+  if (password !== password2) { showAuthError('Les mots de passe ne correspondent pas.'); return; }
+  setBtnLoading('btn-signup', true, 'Créer mon compte');
+  clearAuthMessages();
+  const { data, error } = await sbClient.auth.signUp({ email: usernameToEmail(username), password, options: { data: { username } } });
+  setBtnLoading('btn-signup', false, 'Créer mon compte');
+  if (error) { showAuthError(error.message === 'User already registered' ? 'Cet identifiant est déjà pris.' : error.message); return; }
+  if (!data.session) {
+    showAuthSuccess('Compte créé ! Connectez-vous maintenant.');
+    showAuthPanel('login');
+    document.getElementById('login-username').value = username;
     return;
   }
-  await onAuthSuccess(result.data.user);
+  await onAuthSuccess(data.user);
 }
 
 async function onAuthSuccess(user) {
@@ -2146,88 +2148,70 @@ async function onAuthSuccess(user) {
   if (db.settings.timerVisible) document.getElementById('timer-bar').classList.remove('hidden');
 }
 
+function startOffline() {
+  document.getElementById('auth-screen').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  loadDB(); seedWelcomeFolders();
+  applyTheme(); renderSidebar(); showHome(); initTimer();
+  if (db.settings.timerVisible) document.getElementById('timer-bar').classList.remove('hidden');
+  setSyncStatus('offline', 'Hors ligne');
+  document.getElementById('user-email-short').textContent = 'Hors ligne';
+  document.getElementById('user-avatar').textContent = '?';
+}
+
 function updateUserUI(user) {
-  const email = user.email || '';
-  document.getElementById('user-email-short').textContent = email.split('@')[0].slice(0, 12);
-  document.getElementById('user-avatar').textContent = email[0].toUpperCase();
+  const username = user.user_metadata?.username || user.email?.replace('@atlas-app.com','') || '?';
+  document.getElementById('user-email-short').textContent = username.slice(0, 14);
+  document.getElementById('user-avatar').textContent = username[0].toUpperCase();
 }
 
 function openUserMenu() {
-  openModal('Mon compte', `
-    <p style="font-size:0.85rem;color:var(--text2);margin-bottom:16px">Connecté en tant que<br><strong>${currentUser?.email}</strong></p>
-    <hr style="border:none;border-top:1px solid var(--border);margin:12px 0">
-    <p style="font-size:0.82rem;color:var(--text3);margin-bottom:16px">Sauvegardez ou transférez votre bibliothèque en local.</p>
-    <div style="display:flex;gap:8px">
-      <button class="btn btn-secondary btn-sm" onclick="exportJSON();closeModal()" style="flex:1">📤 Exporter JSON</button>
-      <button class="btn btn-secondary btn-sm" onclick="closeModal();setTimeout(()=>openImportExport(),100)" style="flex:1">📥 Importer JSON</button>
-    </div>
-  `, [
-    { label: 'Fermer', cls: 'btn btn-secondary', action: closeModal },
-    { label: '🚪 Se déconnecter', cls: 'btn btn-danger', action: signOut }
-  ]);
+  if (currentUser) {
+    const username = currentUser.user_metadata?.username || currentUser.email?.replace('@atlas-app.com','') || currentUser.email;
+    openModal('Mon compte', `
+      <p style="font-size:0.85rem;color:var(--text2);margin-bottom:16px">Connecté en tant que<br><strong>${esc(username)}</strong></p>
+      <hr style="border:none;border-top:1px solid var(--border);margin:12px 0">
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-secondary btn-sm" onclick="exportJSON();closeModal()" style="flex:1">📤 Exporter JSON</button>
+        <button class="btn btn-secondary btn-sm" onclick="closeModal();setTimeout(()=>openImportExport(),100)" style="flex:1">📥 Importer JSON</button>
+      </div>
+    `, [
+      { label: 'Fermer', cls: 'btn btn-secondary', action: closeModal },
+      { label: '🚪 Se déconnecter', cls: 'btn btn-danger', action: signOut }
+    ]);
+  } else {
+    openModal('Mode hors ligne', `
+      <p style="font-size:0.85rem;color:var(--text2);margin-bottom:16px">Vos données sont sauvegardées localement.</p>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-secondary btn-sm" onclick="exportJSON();closeModal()" style="flex:1">📤 Exporter JSON</button>
+        <button class="btn btn-secondary btn-sm" onclick="closeModal();setTimeout(()=>openImportExport(),100)" style="flex:1">📥 Importer JSON</button>
+      </div>
+    `, [
+      { label: 'Fermer', cls: 'btn btn-secondary', action: closeModal },
+      { label: '🔑 Se connecter', cls: 'btn btn-primary', action: () => { closeModal(); document.getElementById('app').classList.add('hidden'); document.getElementById('auth-screen').classList.remove('hidden'); } }
+    ]);
+  }
 }
 
 async function signOut() {
-  await supabase.auth.signOut();
-  currentUser = null;
-  closeModal();
+  await sbClient.auth.signOut();
+  currentUser = null; closeModal();
   document.getElementById('auth-screen').classList.remove('hidden');
+  document.getElementById('app').classList.add('hidden');
   showToast('Déconnecté');
 }
 
 // ===========================
-// SYNC STATUS UI
+// SYNC STATUS
 // ===========================
 function setSyncStatus(state, label) {
   const dot = document.getElementById('sync-dot');
-  const lbl = document.getElementById('sync-label');
   dot.className = '';
-  if (state === 'syncing') { dot.classList.add('syncing'); }
-  else if (state === 'error') { dot.classList.add('error'); }
-  else if (state === 'offline') { dot.classList.add('offline'); }
-  lbl.textContent = label || '';
+  if (state === 'syncing') dot.classList.add('syncing');
+  else if (state === 'error') dot.classList.add('error');
+  else if (state === 'offline') dot.classList.add('offline');
+  document.getElementById('sync-label').textContent = label || '';
 }
-
-// ===========================
-// SUPABASE PULL (Supabase → local)
-// ===========================
-async function pullFromSupabase() {
-  if (!currentUser) return;
-  try {
-    const uid = currentUser.id;
-    const [{ data: folders, error: fe }, { data: sheets, error: se }, { data: settings, error: ste }] = await Promise.all([
-      supabase.from('atlas_folders').select('*').eq('user_id', uid),
-      supabase.from('atlas_sheets').select('*').eq('user_id', uid),
-      supabase.from('atlas_settings').select('*').eq('user_id', uid).maybeSingle()
-    ]);
-    if (fe || se) throw fe || se;
-
-    // Rebuild db.folders
-    if (folders && folders.length) {
-      db.folders = {};
-      folders.forEach(f => { db.folders[f.id] = { id: f.id, name: f.name, icon: f.icon, parentId: f.parent_id, createdAt: f.created_at }; });
-    }
-    // Rebuild db.sheets
-    if (sheets && sheets.length) {
-      db.sheets = {};
-      sheets.forEach(s => { db.sheets[s.id] = { id: s.id, name: s.name, folderId: s.folder_id, content: s.content, status: s.status, favorite: s.favorite, createdAt: s.created_at, updatedAt: s.updated_at }; });
-    }
-    // Settings
-    if (settings) {
-      try { const parsed = JSON.parse(settings.data); db.settings = { ...db.settings, ...parsed }; } catch(e) {}
-    }
-    saveDB(); // update localStorage cache
-  } catch(e) {
-    console.error('Pull error', e);
-    setSyncStatus('error', 'Erreur sync');
-    showToast('Erreur de synchronisation', 'error');
-  }
-}
-
-// ===========================
-// SUPABASE PUSH (local → Supabase)
-// ===========================
-let pushDebounceTimer = null;
 
 function schedulePush() {
   clearTimeout(pushDebounceTimer);
@@ -2235,71 +2219,9 @@ function schedulePush() {
   setSyncStatus('syncing', 'Sauvegarde…');
 }
 
-async function pushToSupabase() {
-  if (!currentUser) return;
-  const uid = currentUser.id;
-  try {
-    // Upsert all folders
-    const folderRows = Object.values(db.folders).map(f => ({
-      id: f.id, user_id: uid, name: f.name, icon: f.icon || '📁',
-      parent_id: f.parentId || null, created_at: f.createdAt
-    }));
-    // Upsert all sheets
-    const sheetRows = Object.values(db.sheets).map(s => ({
-      id: s.id, user_id: uid, name: s.name, folder_id: s.folderId,
-      content: s.content || '', status: s.status || 'todo',
-      favorite: s.favorite || false,
-      created_at: s.createdAt, updated_at: s.updatedAt || s.createdAt
-    }));
-    // Upsert settings
-    const settingsRow = { user_id: uid, data: JSON.stringify(db.settings) };
-
-    const ops = [
-      supabase.from('atlas_settings').upsert(settingsRow, { onConflict: 'user_id' })
-    ];
-    if (folderRows.length) ops.push(supabase.from('atlas_folders').upsert(folderRows, { onConflict: 'id' }));
-    if (sheetRows.length) ops.push(supabase.from('atlas_sheets').upsert(sheetRows, { onConflict: 'id' }));
-
-    const results = await Promise.all(ops);
-    const err = results.find(r => r.error);
-    if (err) throw err.error;
-
-    setSyncStatus('ok', 'Synchronisé');
-    document.getElementById('sync-label').title = 'Dernière sync : ' + new Date().toLocaleTimeString('fr-FR');
-  } catch(e) {
-    console.error('Push error', e);
-    setSyncStatus('error', 'Erreur sync');
-    showToast('Erreur de synchronisation', 'error');
-  }
-}
-
-// Push deletions individually
-async function pushDeleteFolder(id) {
-  if (!currentUser) return;
-  await supabase.from('atlas_folders').delete().eq('id', id).eq('user_id', currentUser.id);
-}
-async function pushDeleteSheet(id) {
-  if (!currentUser) return;
-  await supabase.from('atlas_sheets').delete().eq('id', id).eq('user_id', currentUser.id);
-}
-
-async function forcSync() {
-  if (!currentUser) return;
-  setSyncStatus('syncing', 'Synchronisation…');
-  await pushToSupabase();
-  await pullFromSupabase();
-  setSyncStatus('ok', 'Synchronisé');
-  showToast('🔄 Synchronisation complète', 'success');
-  // Refresh current view
-  if (currentView === 'home-view') showHome();
-  else if (currentView === 'folder-view' && currentFolderId) openFolder(currentFolderId);
-  else if (currentView === 'sheet-view' && currentSheetId) openSheet(currentSheetId);
-}
-
 // ===========================
-// PATCH saveDB to trigger push
+// SAVE DB (unique — local + push si connecté)
 // ===========================
-const _origSaveDB = saveDB;
 function saveDB() {
   clearTimeout(saveTimer);
   saveTimer = setTimeout(() => {
@@ -2309,36 +2231,96 @@ function saveDB() {
 }
 
 // ===========================
-// PATCH deletions to also delete on Supabase
+// SUPABASE PULL
 // ===========================
-const _origDeleteFolderRecursive = deleteFolderRecursive;
+async function pullFromSupabase() {
+  if (!currentUser) return;
+  try {
+    const uid = currentUser.id;
+    const [{ data: folders, error: fe }, { data: sheets, error: se }, { data: settings }] = await Promise.all([
+      sbClient.from('atlas_folders').select('*').eq('user_id', uid),
+      sbClient.from('atlas_sheets').select('*').eq('user_id', uid),
+      sbClient.from('atlas_settings').select('*').eq('user_id', uid).maybeSingle()
+    ]);
+    if (fe || se) throw fe || se;
+    if (folders && folders.length) {
+      db.folders = {};
+      folders.forEach(f => { db.folders[f.id] = { id: f.id, name: f.name, icon: f.icon, parentId: f.parent_id, createdAt: f.created_at }; });
+    }
+    if (sheets && sheets.length) {
+      db.sheets = {};
+      sheets.forEach(s => { db.sheets[s.id] = { id: s.id, name: s.name, folderId: s.folder_id, content: s.content, status: s.status, favorite: s.favorite, createdAt: s.created_at, updatedAt: s.updated_at }; });
+    }
+    if (settings) {
+      try { const parsed = JSON.parse(settings.data); db.settings = { ...db.settings, ...parsed }; } catch(e) {}
+    }
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); } catch(e) {}
+  } catch(e) {
+    console.error('Pull error', e);
+    setSyncStatus('error', 'Erreur sync');
+    showToast('Erreur de synchronisation', 'error');
+  }
+}
+
+// ===========================
+// SUPABASE PUSH
+// ===========================
+async function pushToSupabase() {
+  if (!currentUser) return;
+  const uid = currentUser.id;
+  try {
+    const folderRows = Object.values(db.folders).map(f => ({ id: f.id, user_id: uid, name: f.name, icon: f.icon || '📁', parent_id: f.parentId || null, created_at: f.createdAt }));
+    const sheetRows  = Object.values(db.sheets).map(s => ({ id: s.id, user_id: uid, name: s.name, folder_id: s.folderId, content: s.content || '', status: s.status || 'todo', favorite: s.favorite || false, created_at: s.createdAt, updated_at: s.updatedAt || s.createdAt }));
+    const ops = [sbClient.from('atlas_settings').upsert({ user_id: uid, data: JSON.stringify(db.settings) }, { onConflict: 'user_id' })];
+    if (folderRows.length) ops.push(sbClient.from('atlas_folders').upsert(folderRows, { onConflict: 'id' }));
+    if (sheetRows.length)  ops.push(sbClient.from('atlas_sheets').upsert(sheetRows,  { onConflict: 'id' }));
+    const results = await Promise.all(ops);
+    const err = results.find(r => r.error);
+    if (err) throw err.error;
+    setSyncStatus('ok', 'Synchronisé');
+    document.getElementById('sync-label').title = 'Dernière sync : ' + new Date().toLocaleTimeString('fr-FR');
+  } catch(e) {
+    console.error('Push error', e);
+    setSyncStatus('error', 'Erreur sync');
+    showToast('Erreur de synchronisation', 'error');
+  }
+}
+
+async function forcSync() {
+  if (!currentUser) { showToast('Connectez-vous pour synchroniser', 'warning'); return; }
+  setSyncStatus('syncing', 'Synchronisation…');
+  await pushToSupabase(); await pullFromSupabase();
+  setSyncStatus('ok', 'Synchronisé');
+  showToast('🔄 Synchronisation complète', 'success');
+  if (currentView === 'home-view') showHome();
+  else if (currentView === 'folder-view' && currentFolderId) openFolder(currentFolderId);
+  else if (currentView === 'sheet-view' && currentSheetId) openSheet(currentSheetId);
+}
+
+// ===========================
+// DELETE avec sync Supabase (unique)
+// ===========================
 function deleteFolderRecursive(id) {
-  // collect ids before deleting
-  const folderIds = [];
-  const sheetIds = [];
+  const folderIds = [], sheetIds = [];
   const collect = (fid) => {
     folderIds.push(fid);
     Object.values(db.sheets).filter(s => s.folderId === fid).forEach(s => sheetIds.push(s.id));
     Object.values(db.folders).filter(f => f.parentId === fid).forEach(f => collect(f.id));
   };
   collect(id);
-  // delete locally
   sheetIds.forEach(sid => delete db.sheets[sid]);
   folderIds.forEach(fid => delete db.folders[fid]);
-  // delete remotely
   if (currentUser) {
-    sheetIds.forEach(sid => supabase.from('atlas_sheets').delete().eq('id', sid).eq('user_id', currentUser.id));
-    folderIds.forEach(fid => supabase.from('atlas_folders').delete().eq('id', fid).eq('user_id', currentUser.id));
+    sheetIds.forEach(sid => sbClient.from('atlas_sheets').delete().eq('id', sid).eq('user_id', currentUser.id));
+    folderIds.forEach(fid => sbClient.from('atlas_folders').delete().eq('id', fid).eq('user_id', currentUser.id));
   }
 }
 
-// Patch sheet deletion
-const _origDeleteSheet = deleteSheet;
 function deleteSheet(id) {
   openModal('Supprimer la feuille', `<p style="color:var(--text2)">Supprimer définitivement cette feuille ?</p>`, [
     { label: 'Annuler', cls: 'btn btn-secondary', action: closeModal },
     { label: 'Supprimer', cls: 'btn btn-danger', action: async () => {
-      if (currentUser) await pushDeleteSheet(id);
+      if (currentUser) await sbClient.from('atlas_sheets').delete().eq('id', id).eq('user_id', currentUser.id);
       delete db.sheets[id];
       saveDB(); closeModal();
       if (currentSheetId === id) { if (currentFolderId) openFolder(currentFolderId); else showHome(); }
@@ -2349,68 +2331,44 @@ function deleteSheet(id) {
 }
 
 // ===========================
-// INIT — run after ALL declarations
+// WELCOME DATA
 // ===========================
-loadDB();
-
-// Seed welcome folders on first launch
 function seedWelcomeFolders() {
   if (Object.keys(db.folders).length) return;
   const subjects = [
-    { name: 'Mathématiques', icon: '🔢' },
-    { name: 'Physique-Chimie', icon: '⚗️' },
-    { name: 'Dessin & Art', icon: '🎨' },
-    { name: 'Histoire-Géographie', icon: '🌍' },
+    { name: 'Mathématiques', icon: '🔢' }, { name: 'Physique-Chimie', icon: '⚗️' },
+    { name: 'Dessin & Art', icon: '🎨' }, { name: 'Histoire-Géographie', icon: '🌍' },
     { name: 'Informatique', icon: '💻' },
   ];
-  subjects.forEach(s => {
-    const id = generateId();
-    db.folders[id] = { id, name: s.name, icon: s.icon, parentId: null, createdAt: new Date().toISOString() };
-  });
-  saveDB();
+  subjects.forEach(s => { const id = generateId(); db.folders[id] = { id, name: s.name, icon: s.icon, parentId: null, createdAt: new Date().toISOString() }; });
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); } catch(e) {}
 }
 
+// ===========================
+// INIT
+// ===========================
+loadDB();
 applyTheme();
 
-// Check existing session
-supabase.auth.getSession().then(async ({ data: { session } }) => {
-  if (session?.user) {
-    await onAuthSuccess(session.user);
-  } else {
-    // No session — show app in offline mode
-    document.getElementById('app').classList.remove('hidden');
-    loadDB();
-    seedWelcomeFolders();
-    renderSidebar();
-    showHome();
-    initTimer();
-    if (db.settings.timerVisible) document.getElementById('timer-bar').classList.remove('hidden');
-    setSyncStatus('offline', 'Non connecté');
-  }
+sbClient.auth.getSession().then(async ({ data: { session } }) => {
+  if (session?.user) { await onAuthSuccess(session.user); }
+  // sinon on reste sur l'écran de connexion
 });
 
-// Listen for auth state changes (e.g. magic link, token refresh)
-supabase.auth.onAuthStateChange(async (event, session) => {
-  if (event === 'SIGNED_IN' && session?.user && !currentUser) {
-    await onAuthSuccess(session.user);
-  } else if (event === 'SIGNED_OUT') {
-    currentUser = null;
-  }
+sbClient.auth.onAuthStateChange(async (event, session) => {
+  if (event === 'SIGNED_IN' && session?.user && !currentUser) await onAuthSuccess(session.user);
+  else if (event === 'SIGNED_OUT') currentUser = null;
 });
 
 // ===========================
 // AUTH EVENT LISTENERS
-// (bound here, after all functions are defined)
 // ===========================
-document.getElementById('tab-login').addEventListener('click', () => switchAuthTab('login'));
-document.getElementById('tab-signup').addEventListener('click', () => switchAuthTab('signup'));
-document.getElementById('auth-submit-btn').addEventListener('click', submitAuth);
-document.getElementById('forgot-link').addEventListener('click', showForgotPassword);
-
-// Allow pressing Enter in auth fields to submit
-document.getElementById('auth-email').addEventListener('keydown', e => { if (e.key === 'Enter') submitAuth(); });
-document.getElementById('auth-pass').addEventListener('keydown', e => { if (e.key === 'Enter') submitAuth(); });
+document.getElementById('offline-link').addEventListener('click', startOffline);
+document.getElementById('login-username').addEventListener('keydown',  e => { if (e.key === 'Enter') doLogin(); });
+document.getElementById('login-password').addEventListener('keydown',  e => { if (e.key === 'Enter') doLogin(); });
+document.getElementById('signup-username').addEventListener('keydown', e => { if (e.key === 'Enter') doSignup(); });
+document.getElementById('signup-password').addEventListener('keydown', e => { if (e.key === 'Enter') doSignup(); });
+document.getElementById('signup-password2').addEventListener('keydown',e => { if (e.key === 'Enter') doSignup(); });
 </script>
-</div><!-- /#app -->
 </body>
 </html>
