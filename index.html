@@ -6,6 +6,66 @@
 <title>Atlas — Mon Espace d'Étude</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #f7f5f0;
+    --bg2: #edeae3;
+    --bg3: #e2ddd5;
+    --surface: #ffffff;
+    --surface2: #f9f7f4;
+    --border: #d8d3ca;
+    --border2: #c8c2b8;
+    --text: #1a1714;
+    --text2: #5a5650;
+    --text3: #8a847d;
+    --accent: #c47b3a;
+    --accent2: #a86028;
+    --accent-light: #f5e8d8;
+    --blue: #3a6fbc;
+    --blue-light: #dce8f8;
+    --red: #bc3a3a;
+    --red-light: #f8dcdc;
+    --green: #3a8c5c;
+    --green-light: #d8f0e4;
+    --yellow: #c49a2a;
+    --yellow-light: #fdf3d0;
+    --shadow: 0 2px 12px rgba(0,0,0,0.08);
+    --shadow2: 0 4px 24px rgba(0,0,0,0.12);
+    --radius: 10px;
+    --radius2: 16px;
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'DM Sans', system-ui, sans-serif;
+    --font-mono: 'DM Mono', monospace;
+    --transition: 0.2s ease;
+  }
+
+  [data-theme="dark"] {
+    --bg: #151310;
+    --bg2: #1d1a17;
+    --bg3: #252118;
+    --surface: #201d19;
+    --surface2: #2a261f;
+    --border: #3a3528;
+    --border2: #4a4335;
+    --text: #f0ece4;
+    --text2: #b0a898;
+    --text3: #706860;
+    --accent: #d4904a;
+    --accent2: #e8a860;
+    --accent-light: #3a2a14;
+    --blue: #6090d8;
+    --blue-light: #1a2840;
+    --red: #d86060;
+    --red-light: #381818;
+    --green: #60b880;
+    --green-light: #183028;
+    --yellow: #d4b050;
+    --yellow-light: #302410;
+    --shadow: 0 2px 12px rgba(0,0,0,0.3);
+    --shadow2: 0 4px 24px rgba(0,0,0,0.4);
+  }
+
   /* ===== AUTH SCREEN ===== */
   #auth-screen {
     position: fixed; inset: 0; z-index: 9999;
@@ -89,67 +149,6 @@
     display: flex; align-items: center; justify-content: center;
     font-size: 0.7rem; font-weight: 700; flex-shrink: 0;
   }
-</style>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
-
-  :root {
-    --bg: #f7f5f0;
-    --bg2: #edeae3;
-    --bg3: #e2ddd5;
-    --surface: #ffffff;
-    --surface2: #f9f7f4;
-    --border: #d8d3ca;
-    --border2: #c8c2b8;
-    --text: #1a1714;
-    --text2: #5a5650;
-    --text3: #8a847d;
-    --accent: #c47b3a;
-    --accent2: #a86028;
-    --accent-light: #f5e8d8;
-    --blue: #3a6fbc;
-    --blue-light: #dce8f8;
-    --red: #bc3a3a;
-    --red-light: #f8dcdc;
-    --green: #3a8c5c;
-    --green-light: #d8f0e4;
-    --yellow: #c49a2a;
-    --yellow-light: #fdf3d0;
-    --shadow: 0 2px 12px rgba(0,0,0,0.08);
-    --shadow2: 0 4px 24px rgba(0,0,0,0.12);
-    --radius: 10px;
-    --radius2: 16px;
-    --font-display: 'Playfair Display', Georgia, serif;
-    --font-body: 'DM Sans', system-ui, sans-serif;
-    --font-mono: 'DM Mono', monospace;
-    --transition: 0.2s ease;
-  }
-
-  [data-theme="dark"] {
-    --bg: #151310;
-    --bg2: #1d1a17;
-    --bg3: #252118;
-    --surface: #201d19;
-    --surface2: #2a261f;
-    --border: #3a3528;
-    --border2: #4a4335;
-    --text: #f0ece4;
-    --text2: #b0a898;
-    --text3: #706860;
-    --accent: #d4904a;
-    --accent2: #e8a860;
-    --accent-light: #3a2a14;
-    --blue: #6090d8;
-    --blue-light: #1a2840;
-    --red: #d86060;
-    --red-light: #381818;
-    --green: #60b880;
-    --green-light: #183028;
-    --yellow: #d4b050;
-    --yellow-light: #302410;
-    --shadow: 0 2px 12px rgba(0,0,0,0.3);
-    --shadow2: 0 4px 24px rgba(0,0,0,0.4);
-  }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -164,6 +163,7 @@
 
   /* ===== LAYOUT ===== */
   #app { display: flex; flex-direction: column; min-height: 100vh; }
+  #app.hidden { display: none; }
 
   /* ===== TOP BAR ===== */
   #topbar {
@@ -805,8 +805,8 @@
     <div class="auth-logo">📚 <span>Atlas</span></div>
     <p class="auth-subtitle">Votre espace d'apprentissage personnel</p>
     <div class="auth-tabs">
-      <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Connexion</button>
-      <button class="auth-tab" id="tab-signup" onclick="switchAuthTab('signup')">Créer un compte</button>
+      <button class="auth-tab active" id="tab-login">Connexion</button>
+      <button class="auth-tab" id="tab-signup">Créer un compte</button>
     </div>
     <div class="auth-error" id="auth-error"></div>
     <div class="auth-success" id="auth-success"></div>
@@ -818,12 +818,14 @@
       <label class="form-label">Mot de passe</label>
       <input type="password" class="form-input" id="auth-pass" placeholder="••••••••" autocomplete="current-password">
     </div>
-    <button class="auth-btn" id="auth-submit-btn" onclick="submitAuth()">Se connecter</button>
-    <p style="font-size:0.75rem;color:var(--text3);margin-top:14px;cursor:pointer" onclick="showForgotPassword()">Mot de passe oublié ?</p>
+    <button class="auth-btn" id="auth-submit-btn">Se connecter</button>
+    <p id="forgot-link" style="font-size:0.75rem;color:var(--text3);margin-top:14px;cursor:pointer">Mot de passe oublié ?</p>
   </div>
 </div>
 
-<div id="app">
+
+
+<div id="app" class="hidden">
 
   <!-- TOP BAR -->
   <header id="topbar">
@@ -2049,7 +2051,7 @@ function formatDate(iso) {
 // SUPABASE CONFIG
 // ===========================
 const SUPABASE_URL = 'https://daixjtpbuwedsuokhdxw.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_vlNU7aXBzO7i14PJtpOyDw_rQg_enYp';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhaXhqdHBidXdlZHN1b2toZHh3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5NDg5NjMsImV4cCI6MjA4OTUyNDk2M30.7_hl-8J3UwPBfJTIWQbN8wM3wfVxLKrx5nGxW1BIlQ4';
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let currentUser = null;
@@ -2116,6 +2118,7 @@ async function submitAuth() {
 async function onAuthSuccess(user) {
   currentUser = user;
   document.getElementById('auth-screen').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
   updateUserUI(user);
   setSyncStatus('syncing', 'Chargement…');
   await pullFromSupabase();
@@ -2355,7 +2358,8 @@ supabase.auth.getSession().then(async ({ data: { session } }) => {
   if (session?.user) {
     await onAuthSuccess(session.user);
   } else {
-    // No session — show auth screen, but app already initialized for offline use
+    // No session — show app in offline mode
+    document.getElementById('app').classList.remove('hidden');
     loadDB();
     seedWelcomeFolders();
     renderSidebar();
@@ -2374,6 +2378,20 @@ supabase.auth.onAuthStateChange(async (event, session) => {
     currentUser = null;
   }
 });
+
+// ===========================
+// AUTH EVENT LISTENERS
+// (bound here, after all functions are defined)
+// ===========================
+document.getElementById('tab-login').addEventListener('click', () => switchAuthTab('login'));
+document.getElementById('tab-signup').addEventListener('click', () => switchAuthTab('signup'));
+document.getElementById('auth-submit-btn').addEventListener('click', submitAuth);
+document.getElementById('forgot-link').addEventListener('click', showForgotPassword);
+
+// Allow pressing Enter in auth fields to submit
+document.getElementById('auth-email').addEventListener('keydown', e => { if (e.key === 'Enter') submitAuth(); });
+document.getElementById('auth-pass').addEventListener('keydown', e => { if (e.key === 'Enter') submitAuth(); });
 </script>
+</div><!-- /#app -->
 </body>
 </html>
